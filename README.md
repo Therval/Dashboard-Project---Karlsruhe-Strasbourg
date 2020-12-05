@@ -8,7 +8,9 @@
 - New Project -> Get from VCS -> Github
 - Sign in to your Github account
 - Then you can select the repo and clone it
-- When PyCharm asks, create a virtual environment in a folder called "env" or "venv" using python3.6 and the requirements.txt.
+- When PyCharm asks, create a virtual environment in a folder called "env" or "venv" using python3.9 and the requirements.txt.
+- If the virtual environment dialog doesn't appear automatically: Select File -> Settings -> Project -> Python Interpreter -> Add.
+Then it is probably also necessary to open the requirements.txt and click on "install requirements".
 
 To run, click the green arrow on the top right.
 The app is then running on
@@ -41,7 +43,9 @@ pip install -r requirements.txt
 
 To run:
 
-```sh 
+(activate the virtual environment again, necessary)
+
+```sh
 python app.py
 ```
 
@@ -50,4 +54,4 @@ The app is then running on
 
 ## TODO
 
-- Create a general presentation of the project with the subject, needed Python librairies and so on..
+- Create a general presentation of the project with the subject, needed Python librairies and so on.
