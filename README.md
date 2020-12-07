@@ -54,7 +54,12 @@ python app.py
 The app is then running on
 [127.0.0.1:8050](http://127.0.0.1:8050/)
 
-## Requirements
+## Deployment
+
+`Procfile` and the requirement `gunicorn` are necessary for
+[deployment on Heroku](https://dash.plotly.com/deployment).
+
+## Dependencies
 
 This project mainly uses:
 
