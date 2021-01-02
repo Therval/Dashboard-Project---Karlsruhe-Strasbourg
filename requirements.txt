@@ -1,4 +1,6 @@
 gunicorn
-dash~=1.17.0
-plotly~=4.13.0
-pandas~=1.1.4
+plotly
+dash
+dtale
+flask
+pandas
