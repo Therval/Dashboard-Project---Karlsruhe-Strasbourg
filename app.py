@@ -14,9 +14,9 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 DATASET_PATH = 'dataset/papers.parquet'
 # Rename some labels
 LABELS = {
-         "PY": "Publication Year",
-         "SC": "Fields of Science",
-         "NumAuthors": "Number of Authors",
+         'PY': 'Publication Year',
+         'SC': 'Fields of Science',
+         'NumAuthors': 'Number of Authors',
          }
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets, suppress_callback_exceptions=True)
@@ -24,18 +24,18 @@ server = app.server
 
 df = pd.read_parquet(DATASET_PATH)
 df_sample = pd.DataFrame({
-    "Fruit": ["Apples", "Oranges", "Bananas", "Apples", "Oranges", "Bananas"],
-    "Amount": [4, 1, 2, 2, 4, 5],
-    "City": ["SF", "SF", "SF", "Montreal", "Montreal", "Montreal"]
+    'Fruit': ['Apples', 'Oranges', 'Bananas', 'Apples', 'Oranges', 'Bananas'],
+    'Amount': [4, 1, 2, 2, 4, 5],
+    'City': ['SF', 'SF', 'SF', 'Montreal', 'Montreal', 'Montreal']
 })
 
 
 # --- DEFINE CHARTS ---
 
-df_group = pd.DataFrame({'Count': df.groupby(["PY", "Organisation"]).size()}).reset_index()
+df_group = pd.DataFrame({'Count': df.groupby(['PY', 'Organisation']).size()}).reset_index()
 fig = px.line(df_group, x='PY', y='Count', color='Organisation', labels=LABELS, title='Count of papers in the data set')
 
-fig_sample = px.bar(df_sample, x="Fruit", y="Amount", color="City", barmode="group")
+fig_sample = px.bar(df_sample, x='Fruit', y='Amount', color='City', barmode='group')
 
 
 # --- LAYOUTS ---
