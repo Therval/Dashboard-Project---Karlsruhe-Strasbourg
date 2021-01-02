@@ -85,6 +85,8 @@ final_df.drop(["UT", "nb_aut_aff"], axis=1, inplace=True)
 final_df.rename(columns={"C1": "Country", "nb_aut": "NumAuthors"}, inplace=True)
 # - Drop duplicates
 final_df.drop_duplicates(inplace=True)
+# - Re-index
+final_df.reset_index(drop=True, inplace=True)
 
 # %% -- Save final dataset to CSV
 final_df.to_csv("papers.csv", index=False)
