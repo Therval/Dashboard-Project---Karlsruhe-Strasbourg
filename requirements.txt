@@ -1,4 +1,5 @@
 gunicorn
+pyarrow
 plotly
 dash
 dtale
