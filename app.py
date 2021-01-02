@@ -32,8 +32,23 @@ df_sample = pd.DataFrame({
 
 # --- DEFINE CHARTS ---
 
+histogram_year = px.histogram(
+    df,
+    x='PY',
+    color='Organisation',
+    labels=LABELS,
+    title='Histogram of papers in the data set by year'
+)
+
 df_group = pd.DataFrame({'Count': df.groupby(['PY', 'Organisation']).size()}).reset_index()
-fig = px.line(df_group, x='PY', y='Count', color='Organisation', labels=LABELS, title='Count of papers in the data set')
+histogram_year_line = px.line(
+    df_group,
+    x='PY',
+    y='Count',
+    color='Organisation',
+    labels=LABELS,
+    title='Histogram of papers in the data set by year (line chart)'
+)
 
 fig_sample = px.bar(df_sample, x='Fruit', y='Amount', color='City', barmode='group')
 
@@ -47,20 +62,22 @@ app.layout = html.Div([
 
 analyses_layout = html.Div(children=[
     html.H1(children='Published Scientific Papers Which Use Deep Learning'),
-
     html.Div(children='''
         Analyses of 283014 scientific papers which use deep learning.
         The papers are published in the Web of Science core collection.
     '''),
-
     html.A(
         children='You can examine the whole data set here using D-Tale',
         href='/dtale'
     ),
 
     dcc.Graph(
-        id='papers',
-        figure=fig
+        id='histogram-year',
+        figure=histogram_year
+    ),
+    dcc.Graph(
+        id='histogram-year-line',
+        figure=histogram_year_line
     ),
 
     html.A(
