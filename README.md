@@ -10,10 +10,10 @@ The dashboard is deployed at [dashboard-ka-sb.herokuapp.com](https://dashboard-k
 - New Project -> Get from VCS -> Github
 - Sign in to your Github account
 - Then you can select the repo and clone it
-- When PyCharm asks, create a virtual environment in a folder called "env" using python3.9 and the requirements.txt.
+- When PyCharm asks, create a virtual environment in a folder called "env" using python3.8 and the requirements.txt.
 - If the virtual environment dialog doesn't appear automatically: Select File -> Settings -> Project -> Python Interpreter -> Add.
 Then it is probably also necessary to open the requirements.txt and click on "install requirements".
-  If you have problems installing the `pyarrow` try installing the nightly:
+  If you have problems installing `pyarrow`, make sure you are using python 3.8 or try installing the nightly:
   `pip install --extra-index-url https://pypi.fury.io/arrow-nightlies/ --pre pyarrow`.
 - On Windows you might need to adjust the 'SDK_HOME' path in `.run/app.run.xml` to match the structure of your `env`
 directory (eg. to `$PROJECT_DIR$/env/Scripts/python`).
@@ -67,7 +67,7 @@ The files `runtime.txt`, `Procfile` and the requirement `gunicorn` are used for
 
 This project mainly uses:
 
-- [Python 3.9](https://www.python.org/)
+- [Python 3.8](https://www.python.org/)
 - [Gunicorn](https://gunicorn.org/)
 - [PyArrow](https://arrow.apache.org/docs/python/)
 - [Plotly Dash](https://plotly.com/dash/)
