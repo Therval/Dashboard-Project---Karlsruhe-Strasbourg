@@ -13,6 +13,8 @@ The dashboard is deployed at [dashboard-ka-sb.herokuapp.com](https://dashboard-k
 - When PyCharm asks, create a virtual environment in a folder called "env" using python3.9 and the requirements.txt.
 - If the virtual environment dialog doesn't appear automatically: Select File -> Settings -> Project -> Python Interpreter -> Add.
 Then it is probably also necessary to open the requirements.txt and click on "install requirements".
+- On Windows you might need to adjust the 'SDK_HOME' path in `.run/app.run.xml` to match the structure of your `env`
+directory (eg. to `$PROJECT_DIR$/env/Scripts/python`).
 
 To run, click the green arrow on the top right.
 The app is then running on
@@ -66,8 +68,26 @@ This project mainly uses:
 - [Python 3.9](https://www.python.org/)
 - [Gunicorn](https://gunicorn.org/)
 - [Plotly Dash](https://plotly.com/dash/)
+- [D-Tale](https://github.com/man-group/dtale)
+- [Flask](https://flask.palletsprojects.com/)
 - [Pandas](https://pandas.pydata.org/)
 
-# TODO
+## Dataset
 
-- Create a general presentation of the project with the subject, needed Python librairies and so on.
+The dataset is a record of 283014 published scientific papers.
+
+- `PY`: Publication Year (integer)
+- `SC`: (string/category)
+- `NR`: (integer)
+- `ArtsHumanities /
+  LifeSciencesBiomedicine /
+  PhysicalSciences /
+  SocialSciences /
+  Health /
+  ComputerScience`:
+  (float between 0 and 1)
+- `TCperYear`: (float)
+- `NumAuthors`: Number of authors (integer)
+- `Organisation`: Either "Academia" or "Company" (string/category)
+- `Country`: (string/category)
+- `Region`: 9 different Regions (string/category)
