@@ -88,3 +88,34 @@ final_df.drop_duplicates(inplace=True)
 
 # %% -- Save final dataset to CSV
 final_df.to_csv("papers.csv", index=False)
+
+# %% -- Show column and memory info
+final_df.info(memory_usage='deep')
+final_df.memory_usage(deep=True)
+final_df.agg(['size', 'count', 'nunique', 'std', 'min',  'median', 'max'])
+
+# %% -- Optimize datatypes
+opt_df = final_df.copy()
+# - Convert to categories
+opt_df['SC'] = final_df['SC'].astype('category')
+opt_df['Organisation'] = final_df['Organisation'].astype('category')
+opt_df['Country'] = final_df['Country'].astype('category')
+opt_df['Region'] = final_df['Region'].astype('category')
+# - Downcasts integers
+opt_df[
+    ['PY', 'NR', 'NumAuthors', 'ComputerScience', 'Health']
+    ] = final_df[
+    ['PY', 'NR', 'NumAuthors', 'ComputerScience', 'Health']
+    ].apply(pd.to_numeric, downcast='unsigned')
+
+# %% -- Check optimized dataframe
+opt_df.info(memory_usage='deep')
+print('Memory reduction: ', round(100 - 100
+                                  * opt_df.memory_usage(deep=True).sum()
+                                  / final_df.memory_usage(deep=True).sum()
+                                  ), '%')
+
+# %% -- Save as a Parquet file
+# - Parquet: a compressed file that memorizes dtypes
+# - Requires pyarrow: 'conda install -c conda-forge pyarrow' or 'pip install pyarrow'
+opt_df.to_parquet('papers.parquet', compression='gzip')
