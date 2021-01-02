@@ -10,6 +10,8 @@ import dash_html_components as html
 import plotly.express as px
 import pandas as pd
 
+DATASET_PATH = 'dataset/papers.parquet'
+
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -18,13 +20,18 @@ server = app.server
 
 # assume you have a "long-form" data frame
 # see https://plotly.com/python/px-arguments/ for more options
-df = pd.DataFrame({
+df = pd.read_parquet(DATASET_PATH)
+
+df_group = pd.DataFrame({'count' : df.groupby( [ "PY", "Organisation"] ).size()}).reset_index()
+fig = px.line(df_group, x='PY', y='count', color='Organisation', title='Papers')
+
+df_sample = pd.DataFrame({
     "Fruit": ["Apples", "Oranges", "Bananas", "Apples", "Oranges", "Bananas"],
     "Amount": [4, 1, 2, 2, 4, 5],
     "City": ["SF", "SF", "SF", "Montreal", "Montreal", "Montreal"]
 })
 
-fig = px.bar(df, x="Fruit", y="Amount", color="City", barmode="group")
+fig_sample = px.bar(df_sample, x="Fruit", y="Amount", color="City", barmode="group")
 
 app.layout = html.Div(children=[
     html.H1(children='Hello Dash'),
@@ -34,8 +41,13 @@ app.layout = html.Div(children=[
     '''),
 
     dcc.Graph(
-        id='example-graph',
+        id='papers',
         figure=fig
+    ),
+
+    dcc.Graph(
+        id='example-graph',
+        figure=fig_sample
     ),
 
     html.H2('Hello World'),
