@@ -77,8 +77,9 @@ This project mainly uses:
 
 ## Dataset
 
-The dataset contains all deep learning papers (identified through keyword search in title and abstract)
-in the WoS core collection. There are 283014 entries of published scientific papers.
+The dataset contains 283014 scientific papers which use deep learning.
+They are identified through keyword search in the title and abstract.
+The papers are published in the Web of Science core collection.
 
 - `PY`: Publication year (integer)
 - `SC`: Fields of science (string/category)

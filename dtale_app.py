@@ -26,6 +26,6 @@ if __name__ == '__main__':
 
     @app.route("/")
     def hello_world():
-        return 'Hi there, load data using <a href="/create-df">create-df</a>'
+        return 'Hi there, load data using <a href="/dtale">dtale</a>'
 
     app.run(host="0.0.0.0", port=8080)
