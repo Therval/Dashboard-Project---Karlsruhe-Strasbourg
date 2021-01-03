@@ -10,7 +10,6 @@ import dash_html_components as html
 import plotly.express as px
 import pandas as pd
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 DATASET_PATH = 'dataset/papers.parquet'
 # Rename some labels
 LABELS = {
@@ -19,7 +18,7 @@ LABELS = {
          'NumAuthors': 'Number of Authors',
          }
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets, suppress_callback_exceptions=True)
+app = dash.Dash(__name__, suppress_callback_exceptions=True)
 server = app.server
 
 df = pd.read_parquet(DATASET_PATH)

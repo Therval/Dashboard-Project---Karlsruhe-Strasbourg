@@ -1,0 +1,8 @@
+
+#page-content {
+  text-align: center;
+}
+
+body {
+	background: linear-gradient(-45deg, hsl(250, 43%, 29%), hsl(225, 50%, 27%), hsl(200, 57%, 25%), hsl(175, 64%, 23%));
+}
