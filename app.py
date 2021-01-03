@@ -64,11 +64,11 @@ analyses_layout = html.Div([
                 html.Div([
                         html.Div([
                                 html.H1(
-                                    "A Diffusion Between Academia and Companies",
+                                    'A Diffusion Between Academia and Companies',
                                     id='main-title',
                                 ),
                                 html.H3(
-                                    "of Published Scientific Papers Which Use Deep Learning",
+                                    'of Published Scientific Papers Which Use Deep Learning',
                                     id='subtitle',
                                 ),
                                 html.H6(
@@ -80,13 +80,13 @@ analyses_layout = html.Div([
                                 ),
                         ])
                     ],
-                    id="title",
-                    className="twelve columns",
+                    id='title',
+                    className='twelve columns',
                 ),
             ],
-            id="header",
-            className="row flex-display",
-            style={"margin-bottom": "25px"},
+            id='header',
+            className='row flex-display',
+            style={'margin-bottom': '25px'},
         ),
         dcc.Graph(
             id='histogram-year',

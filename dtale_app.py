@@ -28,8 +28,8 @@ def load_dataset():
     return redirect(f'{request.script_root}/dtale/main/{DATASET_NAME}', code=302)
 
 
-@app.route("/")
-@app.route("/instances")
+@app.route('/')
+@app.route('/instances')
 def get_dtale_instances():
     """Get all dtale instances and display them."""
     instances = '<h1>D-Tale Instances</h1>'
@@ -38,10 +38,10 @@ def get_dtale_instances():
     for data_id in dtale.global_state.get_data().keys():
         data_obj = dtale.get_instance(data_id)
         metadata = dtale.global_state.get_metadata(data_id)
-        name = metadata.get("name")
+        name = metadata.get('name')
         # Convert pandas timestamp to python dateTime
-        time = pd.Timestamp(metadata.get("start"), tz=None).to_pydatetime()
-        datetime = time.strftime("%Y-%m-%d %H:%M:%S")
+        time = pd.Timestamp(metadata.get('start'), tz=None).to_pydatetime()
+        datetime = time.strftime('%Y-%m-%d %H:%M:%S')
         # Add them to the html list
         instances += f'<a href="{data_obj.main_url()}">{data_id}</a> {datetime}<br>'
     return instances
