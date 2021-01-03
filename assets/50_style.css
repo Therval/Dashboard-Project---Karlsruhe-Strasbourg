@@ -1,1 +1,19 @@
 /* Small css customizations */
+
+.header {
+    text-align: center;
+}
+
+#main-title {
+    margin-bottom: 0px;
+}
+
+#subtitle {
+    margin-top: 0px;
+}
+
+.footer {
+    text-align: center;
+    color: #333;
+    padding: 30px;
+}

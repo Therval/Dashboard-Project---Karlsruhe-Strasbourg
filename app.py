@@ -59,30 +59,52 @@ app.layout = html.Div([
     html.Div(id='page-content')
 ])
 
-analyses_layout = html.Div(children=[
-    html.H1(children='Published Scientific Papers Which Use Deep Learning'),
-    html.Div(children='''
-        Analyses of 283014 scientific papers which use deep learning.
-        The papers are published in the Web of Science core collection.
-    '''),
-    html.A(
-        children='You can examine the whole data set here using D-Tale',
-        href='/dtale'
-    ),
-
-    dcc.Graph(
-        id='histogram-year',
-        figure=histogram_year
-    ),
-    dcc.Graph(
-        id='histogram-year-line',
-        figure=histogram_year_line
-    ),
-
-    html.A(
-        children='Example charts',
-        href='/examples'
-    )
+analyses_layout = html.Div([
+        html.Div([
+                html.Div([
+                        html.Div([
+                                html.H1(
+                                    "A Diffusion Between Academia and Companies",
+                                    id='main-title',
+                                ),
+                                html.H3(
+                                    "of Published Scientific Papers Which Use Deep Learning",
+                                    id='subtitle',
+                                ),
+                                html.H6(
+                                    '''
+                                        Analyses of 283014 scientific papers which use deep learning.
+                                        The papers are published in the Web of Science core collection.
+                                    ''',
+                                    id='header-description'
+                                ),
+                        ])
+                    ],
+                    id="title",
+                    className="twelve columns",
+                ),
+            ],
+            id="header",
+            className="row flex-display",
+            style={"margin-bottom": "25px"},
+        ),
+        dcc.Graph(
+            id='histogram-year',
+            figure=histogram_year
+        ),
+        dcc.Graph(
+            id='histogram-year-line',
+            figure=histogram_year_line
+        ),
+        html.Div([
+                html.A([
+                        'Example charts',
+                    ],
+                    href='/examples'
+                )
+            ],
+            className='footer'
+        )
 ])
 
 examples_layout = html.Div(children=[
