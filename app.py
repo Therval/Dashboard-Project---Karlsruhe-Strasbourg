@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+"""Run the Dash application."""
 
 # Run this app with `python app.py` and
 # visit http://127.0.0.1:8050/ in your web browser.
 
-# import os
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -122,5 +122,8 @@ def display_page(pathname):
         return analyses_layout
 
 
+# --- START APP ---
+
+# Run the application, if this python file is executed
 if __name__ == '__main__':
     app.run_server(debug=True)

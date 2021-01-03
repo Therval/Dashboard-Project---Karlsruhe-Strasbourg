@@ -1,31 +1,52 @@
 # -*- coding: utf-8 -*-
+"""Run a D-Tale server."""
 
-# Run this app with `python app.py` and
-# visit http://127.0.0.1:8050/ in your web browser.
+# Run this app with `python dtale_app.py` and
+# visit http://localhost:8050/ in your web browser.
 
-# import os
 import pandas as pd
-from flask import redirect
+from flask import redirect, request, jsonify
 from dtale.app import build_app
 from dtale.views import startup
+from dtale.global_state import cleanup
+import dtale
 
 DATASET_PATH = 'dataset/papers.parquet'
+DATASET_NAME = 'papers'
 
+# Dtale application
+app = build_app(reaper_on=False)
+
+
+@app.route('/reload')
+def load_dataset():
+    """Load data set and start a dtale instance."""
+    df = pd.read_parquet(DATASET_PATH)
+    cleanup(DATASET_NAME)
+    startup(data_id=DATASET_NAME, data=df, ignore_duplicate=True)
+    # Redirect to the data set which was loaded
+    return redirect(f'{request.script_root}/dtale/main/{DATASET_NAME}', code=302)
+
+
+@app.route("/")
+@app.route("/instances")
+def get_dtale_instances():
+    """Get all dtale instances and display them."""
+    instances = '<h1>D-Tale Instances</h1>'
+    instances += f'<h3><a href="{request.script_root}/reload">Reload Data Set</a></h3>'
+    # Iterate all loaded instances
+    for data_id in dtale.global_state.get_data().keys():
+        data_obj = dtale.get_instance(data_id)
+        metadata = dtale.global_state.get_metadata(data_id)
+        name = metadata.get("name")
+        # Convert pandas timestamp to python dateTime
+        time = pd.Timestamp(metadata.get("start"), tz=None).to_pydatetime()
+        datetime = time.strftime("%Y-%m-%d %H:%M:%S")
+        # Add them to the html list
+        instances += f'<a href="{data_obj.main_url()}">{data_id}</a> {datetime}<br>'
+    return instances
+
+
+# Run the application, if this python file is executed
 if __name__ == '__main__':
-    app = build_app(reaper_on=False)
-
-    @app.route("/dtale")
-    def run_dtale():
-        df = pd.read_parquet(DATASET_PATH)
-        # dtale.cleanup("1")
-        # dtale.views.startup(data_id="1", data=df, ignore_duplicate=True)
-        # return redirect(f"/dtale/main/1", code=302)
-        instance = startup(data=df, ignore_duplicate=True)
-        return redirect(f"/dtale/main/{instance._data_id}", code=302)
-
-
-    @app.route("/")
-    def hello_world():
-        return 'Hi there, load data using <a href="/dtale">dtale</a>'
-
-    app.run(host="0.0.0.0", port=8080)
+    app.run(host='localhost', port=8050)
