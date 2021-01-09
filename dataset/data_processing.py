@@ -61,8 +61,8 @@ papers = papers.merge(filtered_pap, how="left")
 papers.Organisation.fillna("Academia", inplace=True)
 
 # %% -- Keep Only interesting variables
-papers = papers[["UT", "PY", "SC", "NR", "ArtsHumanities", "LifeSciencesBiomedicine", "PhysicalSciences",
-                 "SocialSciences", "Technology", "ComputerScience", "Health", "TCperYear", "nb_aut", "Organisation"]]
+papers = papers[["UT", "PY", "SC", "ArtsHumanities", "LifeSciencesBiomedicine", "PhysicalSciences", "SocialSciences",
+                 "Technology", "ComputerScience", "Health", "NR", "TCperYear", "nb_aut", "Organisation"]]
 
 # %% -- Aggregate country and regions
 # - Load 2nd dataset
@@ -78,7 +78,7 @@ dl_country['Region'].replace({'WesternEurope': 'Western Europe',
 dl_country['Region'].value_counts(normalize=True)
 
 # %% -- Add Country and Regions
-final_df = papers.merge(dl_country, how="left")
+final_df = papers.merge(dl_country, how="inner")
 # - Drop "UT" features and "Nb_aut_aff"
 final_df.drop(["UT", "nb_aut_aff"], axis=1, inplace=True)
 # - Rename features
