@@ -96,14 +96,14 @@ final_df.info(memory_usage='deep')
 final_df.memory_usage(deep=True)
 final_df.agg(['size', 'count', 'nunique', 'std', 'min',  'median', 'max'])
 
-# %% -- Optimize datatypes
+# %% -- Optimize data types
 opt_df = final_df.copy()
 # - Convert to categories
 opt_df['SC'] = final_df['SC'].astype('category')
 opt_df['Organisation'] = final_df['Organisation'].astype('category')
 opt_df['Country'] = final_df['Country'].astype('category')
 opt_df['Region'] = final_df['Region'].astype('category')
-# - Downcasts integers
+# - Downcast integers
 opt_df[
     ['PY', 'NR', 'NumAuthors', 'ComputerScience', 'Health']
     ] = final_df[

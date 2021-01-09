@@ -82,7 +82,8 @@ This project mainly uses:
 The dataset contains 283014 scientific papers which use deep learning.
 They are identified through keyword search in the title and abstract.
 The papers are published in the Web of Science core collection.
-The classification of research areas can be found here: https://images.webofknowledge.com/images/help/WOS/hp_research_areas_easca.html
+The classification of research areas can be found here:
+[webofknowledge.com](https://images.webofknowledge.com/images/help/WOS/hp_research_areas_easca.html)
 
 - `PY`: Year Published (integer)
 - `SC`: Research Areas (string/category)
@@ -97,6 +98,6 @@ The classification of research areas can be found here: https://images.webofknow
 - `TCperYear`: Web of Science Core Collection Times Cited Count per Year (float)
 - `NumAuthors`: Number of Authors (integer)
 - `Organisation`: Either "Academia" or "Company" (string/category)
-- `Country`: Country Name (string/category)
+- `Country`: Country Name of Author (string/category)
 - `CountryCode`: ISO 3166-1 Alpha-3 Country Code (string/category)
 - `Region`: 9 Different Regions (string/category)
