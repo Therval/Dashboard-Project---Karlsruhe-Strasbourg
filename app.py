@@ -11,11 +11,14 @@ import plotly.express as px
 import pandas as pd
 
 DATASET_PATH = 'dataset/papers.parquet'
-# Rename some labels
+# Describe some labels
 LABELS = {
-         'PY': 'Publication Year',
-         'SC': 'Fields of Science',
+         'PY': 'Year Published',
+         'SC': 'Research Areas',
+         'NR': 'Cited Reference Count',
+         'TCperYear': 'WoS Core Cited Count per Year',
          'NumAuthors': 'Number of Authors',
+         'CountryCode': 'Country Code'
          }
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
