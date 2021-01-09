@@ -87,6 +87,7 @@ The classification of research areas can be found here:
 
 - `PY`: Year Published (integer)
 - `SC`: Research Areas (string/category)
+- `NR`: Cited Reference Count (integer)
 - `ArtsHumanities /
   LifeSciencesBiomedicine /
   PhysicalSciences /
@@ -94,7 +95,6 @@ The classification of research areas can be found here:
   Health /
   ComputerScience`:
   (float between 0 and 1)
-- `NR`: Cited Reference Count (integer)
 - `TCperYear`: Web of Science Core Collection Times Cited Count per Year (float)
 - `NumAuthors`: Number of Authors (integer)
 - `Organisation`: Either "Academia" or "Company" (string/category)
