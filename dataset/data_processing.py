@@ -37,13 +37,13 @@ papers.C1 = papers.C1.str.replace("Acad", "Academy")
 
 # %% -- More information about firms
 # First, isolate which not contains "University"
-stopwords = ["Ecole", "University", "MIT", "CNR", 'CNRS', "UMIST", "Institute", "ESCPI", "ENSCP",
+stopwords = ["Ecole", "University", "MIT", "CNR", "CNRS", "UMIST", "Institute", "ESCPI", "ENSCP",
              "Academy", "UNR", "USA", "ESCPI", "INSA", "NASA", "UCL", "RIKEN", "LORIA", "IPN", "CSIC",
              "ETIS", "USAF", "Politecn", "Kings Coll London", "London Coll", "NYU", "IDSIA", "Coll Canada",
              "UNICAMP", "UTBM", "CSIRO", "Commiss European", "OECD", "USTHB", "UFRJ", "CEA", "UPC", "INRA",
              "US FDA", "NOAA", "UNESP", "ENEA", "IIT", "SISSA", "IDIAP", "CUNY", "INSERM", "INRIA",
              "UNESCO", "INOAE", "NIST", "CERN", "CSIR", "Polytech", "EPFL", "MITS", "NIMH", "IFREMER"]
-pat = r'({})'.format('|'.join(stopwords))
+pat = r"({})".format('|'.join(stopwords))
 filtered_pap = papers[~papers.C1.str.contains(pat, case=False, na=False)]
 
 # %% -- Sort by C1 and show unique value
@@ -70,12 +70,12 @@ dl_country = pd.read_csv("DL_COUNTRY_REGION.tsv", sep='\t')
 # - Drop unneeded variables
 dl_country.drop(["aff", "PY"], axis=1, inplace=True)
 # - Rename some regions
-dl_country['Region'].replace({'WesternEurope': 'Western Europe',
-                              'Eastern Europe Central Asia': 'Eastern Europe to Central Asia',
-                              'MiddleEast North Africa': 'MiddleEast and North Africa',
-                              'SouthEast Asia Pacific': 'SouthEast Asia and Pacific',
-                              'Latin America Caribbean': 'Latin America and Caribbean'}, inplace=True)
-dl_country['Region'].value_counts(normalize=True)
+dl_country["Region"].replace({"WesternEurope": "Western Europe",
+                              "Eastern Europe Central Asia": "Eastern Europe to Central Asia",
+                              "MiddleEast North Africa": "MiddleEast and North Africa",
+                              "SouthEast Asia Pacific": "SouthEast Asia and Pacific",
+                              "Latin America Caribbean": "Latin America and Caribbean"}, inplace=True)
+dl_country["Region"].value_counts(normalize=True)
 
 # %% -- Add Country and Regions
 final_df = papers.merge(dl_country, how="inner")
@@ -92,27 +92,27 @@ final_df.reset_index(drop=True, inplace=True)
 final_df.to_csv("papers.csv", index=False)
 
 # %% -- Show column and memory info
-final_df.info(memory_usage='deep')
+final_df.info(memory_usage="deep")
 final_df.memory_usage(deep=True)
-final_df.agg(['size', 'count', 'nunique', 'std', 'min',  'median', 'max'])
+final_df.agg(["size", "count", "nunique", "std", "min",  "median", "max"])
 
 # %% -- Optimize data types
 opt_df = final_df.copy()
 # - Convert to categories
-opt_df['SC'] = final_df['SC'].astype('category')
-opt_df['Organisation'] = final_df['Organisation'].astype('category')
-opt_df['Country'] = final_df['Country'].astype('category')
-opt_df['Region'] = final_df['Region'].astype('category')
+opt_df["SC"] = final_df["SC"].astype("category")
+opt_df["Organisation"] = final_df["Organisation"].astype("category")
+opt_df["Country"] = final_df["Country"].astype("category")
+opt_df["Region"] = final_df["Region"].astype("category")
 # - Downcast integers
 opt_df[
-    ['PY', 'NR', 'NumAuthors', 'ComputerScience', 'Health']
+    ["PY", "NR", "NumAuthors", "ComputerScience", "Health"]
     ] = final_df[
-    ['PY', 'NR', 'NumAuthors', 'ComputerScience', 'Health']
-    ].apply(pd.to_numeric, downcast='unsigned')
+    ["PY", "NR", "NumAuthors", "ComputerScience", "Health"]
+    ].apply(pd.to_numeric, downcast="unsigned")
 
 # %% -- Check optimized dataframe
-opt_df.info(memory_usage='deep')
-print('Memory reduction: ', round(100 - 100
+opt_df.info(memory_usage="deep")
+print("Memory reduction: ", round(100 - 100
                                   * opt_df.memory_usage(deep=True).sum()
                                   / final_df.memory_usage(deep=True).sum()
                                   ), '%')
@@ -120,4 +120,4 @@ print('Memory reduction: ', round(100 - 100
 # %% -- Save as a Parquet file
 # - Parquet: a compressed file that memorizes dtypes
 # - Requires pyarrow: 'conda install -c conda-forge pyarrow' or 'pip install pyarrow'
-opt_df.to_parquet('papers.parquet', compression='gzip')
+opt_df.to_parquet("papers.parquet", compression="gzip")
