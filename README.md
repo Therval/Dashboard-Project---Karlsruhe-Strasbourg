@@ -98,6 +98,6 @@ The classification of research areas can be found here:
 - `TCperYear`: Web of Science Core Collection Times Cited Count per Year (float)
 - `NumAuthors`: Number of Authors (integer)
 - `Organisation`: Either "Academia" or "Company" (string/category)
+- `Region`: 9 Different Regions (string/category)
 - `Country`: Country Name of Author (string/category)
 - `CountryCode`: ISO 3166-1 Alpha-3 Country Code (string/category)
-- `Region`: 9 Different Regions (string/category)

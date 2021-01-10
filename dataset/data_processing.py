@@ -2,7 +2,10 @@
 Data processing
 """
 # %% -- Load needed libraries
+print("In order to run this script you need pandas, numpy, pycountry and pyarrow installed")
 import pandas as pd
+import numpy as np
+import pycountry
 
 # %% -- Load dataset
 papers = pd.read_csv("DL_PAPER_1990_2018.tsv", sep='\t')
@@ -70,19 +73,73 @@ dl_country = pd.read_csv("DL_COUNTRY_REGION.tsv", sep='\t')
 # - Drop unneeded variables
 dl_country.drop(["aff", "PY"], axis=1, inplace=True)
 # - Rename some regions
-dl_country["Region"].replace({"WesternEurope": "Western Europe",
-                              "Eastern Europe Central Asia": "Eastern Europe to Central Asia",
-                              "MiddleEast North Africa": "MiddleEast and North Africa",
-                              "SouthEast Asia Pacific": "SouthEast Asia and Pacific",
-                              "Latin America Caribbean": "Latin America and Caribbean"}, inplace=True)
+dl_country["Region"].replace({
+        "WesternEurope": "Western Europe",
+        "Eastern Europe Central Asia": "Eastern Europe to Central Asia",
+        "MiddleEast North Africa": "MiddleEast and North Africa",
+        "SouthEast Asia Pacific": "SouthEast Asia and Pacific",
+        "Latin America Caribbean": "Latin America and Caribbean"
+    },
+    inplace=True
+)
 dl_country["Region"].value_counts(normalize=True)
+
+# %% -- Improve country names
+# - Rename US states: Country values with only two letters are US states
+dl_country["C1"] = dl_country["C1"].apply(lambda country: "USA" if len(country) == 2 else country)
+# - Improve some country names
+dl_country["C1"].replace({
+        "Iran (Islamic Republic of)": "Iran, Islamic Republic of",
+        "The former Yugoslav Republic of Macedonia": "North Macedonia",
+        "Libyan Arab Jamahiriya": "Libya",
+        "Trinid & Tobago": "Trinidad and Tobago",
+        "Fr Polynesia": "French Polynesia",
+        "Laos": "Lao People's Democratic Republic",
+        "Swaziland": "Eswatini",
+        "Western Samoa": "Samoa",
+        "W Ind Assoc St": "United Kingdom",
+        "Ankara": "Turkey",
+        "Arizona": "USA",
+        "Democratic Republic of the Congo": "Congo, The Democratic Republic of the",
+        "Miaoli": "Taiwan",
+        "St Vincent": "Saint Vincent and the Grenadines",
+        "Uae": "United Arab Emirates",
+        "Serbia Monteneg": "Serbia and Montenegro",
+        "*": np.nan
+    },
+    inplace=True
+)
+# - Create a list of used countries
+ct = dl_country["C1"].value_counts().to_frame().reset_index()
+ct.rename({"index": "Country"}, axis='columns', inplace=True)
+ct.drop(["C1"], axis="columns", inplace=True)
+
+# %% -- Identify countries
+def getCountryCode(country):
+    try:
+        return pycountry.countries.search_fuzzy(country)[0].alpha_3
+    except:
+        return np.nan
+ct["CountryCode"] = ct["Country"].apply(getCountryCode)
+# - Correct some country codes manually
+ct["CountryCode"].mask(ct["Country"] == "Guadeloupe", "GLP", inplace=True)
+ct["CountryCode"].mask(ct["Country"] == "Niger", "NER", inplace=True)
+ct["CountryCode"].mask(ct["Country"] == "Kosovo", "UNK", inplace=True)
+# - Add historic country codes
+ct["CountryCode"].mask(ct["Country"] == "Yugoslavia", "YUG", inplace=True)
+ct["CountryCode"].mask(ct["Country"] == "Serbia and Montenegro", "SCG", inplace=True)
+ct["CountryCode"].mask(ct["Country"] == "Ussr", "SUN", inplace=True)
+ct["CountryCode"].mask(ct["Country"] == "Czechoslovakia", "CSK", inplace=True)
+print("Finished identifying countries")
+# - Add country code column using the new table
+dl_country = dl_country.merge(ct, how="left", left_on="C1", right_on="Country")
 
 # %% -- Add Country and Regions
 final_df = papers.merge(dl_country, how="inner")
 # - Drop "UT" features and "Nb_aut_aff"
-final_df.drop(["UT", "nb_aut_aff"], axis=1, inplace=True)
+final_df.drop(["UT", "nb_aut_aff", "C1"], axis="columns", inplace=True)
 # - Rename features
-final_df.rename(columns={"C1": "Country", "nb_aut": "NumAuthors"}, inplace=True)
+final_df.rename({"nb_aut": "NumAuthors"}, axis="columns", inplace=True)
 # - Drop duplicates
 final_df.drop_duplicates(inplace=True)
 # - Re-index
@@ -101,8 +158,9 @@ opt_df = final_df.copy()
 # - Convert to categories
 opt_df["SC"] = final_df["SC"].astype("category")
 opt_df["Organisation"] = final_df["Organisation"].astype("category")
-opt_df["Country"] = final_df["Country"].astype("category")
 opt_df["Region"] = final_df["Region"].astype("category")
+opt_df["Country"] = final_df["Country"].astype("category")
+opt_df["CountryCode"] = final_df["CountryCode"].astype("category")
 # - Downcast integers
 opt_df[
     ["PY", "NR", "NumAuthors", "ComputerScience", "Health"]
