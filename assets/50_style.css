@@ -1,9 +1,5 @@
 /* Small css customizations */
 
-.header {
-    text-align: center;
-}
-
 #main-title {
     margin-bottom: 0px;
 }
@@ -12,11 +8,19 @@
     margin-top: 0px;
 }
 
+#header-description {
+    text-align: justify;
+}
+
+.header {
+    text-align: center;
+}
+
 .item-column {
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    align-items: center;
+    padding-right: 50px;
+    padding-left: 50px;
 }
-
