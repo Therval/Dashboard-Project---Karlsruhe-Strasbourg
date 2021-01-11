@@ -1,6 +1,6 @@
 # Dashboard-Project - Karlsruhe-Strasbourg
 
-The dashboard is deployed at [dashboard-ka-sb.herokuapp.com](https://dashboard-ka-sb.herokuapp.com/)
+The dashboard is deployed at [diffusion.herokuapp.com](https://diffusion.herokuapp.com/)
 
 ## Installation
 
