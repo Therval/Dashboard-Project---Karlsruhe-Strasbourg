@@ -68,6 +68,7 @@ country_org_count = country_org_count.merge(
 histogram_year = px.histogram(
     df,
     x='PY',
+    barmode='group',
     color='Organisation',
     color_discrete_map=COLOR_MAP,
     labels=LABELS,
