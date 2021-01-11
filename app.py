@@ -11,6 +11,8 @@ import plotly.express as px
 import pandas as pd
 
 DATASET_PATH = 'dataset/papers.parquet'
+PANDASPROFILING_REPORT = 'papers_pandas-profiling-report.html'
+SWEETVIZ_REPORT = 'papers_sweetviz-report.html'
 
 # Set color scheme
 COLOR_SEQU = px.colors.sequential.Aggrnyl
@@ -168,14 +170,14 @@ To learn more about the descriptions of the dashboard graphs and their functions
                                 html.A(
                                     "Learn More",
                                     href="/description",
-                                    id="learn-more",
+                                    id="learn-more-btn",
                                     role="button",
                                     className="button"
                                 ),
                                 html.A(
                                     "Explore Dataset",
                                     href="/dataset",
-                                    id="explore-dataset",
+                                    id="explore-dataset-btn",
                                     role="button",
                                     className="button"
                                 )
@@ -225,23 +227,72 @@ To learn more about the descriptions of the dashboard graphs and their functions
         )
 ])
 
-examples_layout = html.Div([
-    html.Div([
-        dcc.Graph(
-            id='histogram-year-line',
-            figure=histogram_year_line,
-            className="pretty_container twelve columns"
+dataset_layout = html.Div([
+        html.Div([
+                html.Div([
+                        html.H1(
+                            'Paper Dataset'
+                        )
+                    ],
+                    id='title',
+                    className='twelve columns'
+                )
+            ],
+            id='header',
+            className='row flex-display'
+        ),
+        html.Div([
+                html.Div([
+                        html.A(
+                            "Show Pandas Profiling Report",
+                            href=f"/static/{PANDASPROFILING_REPORT}",
+                            target="_blank",
+                            rel="noopener noreferrer",
+                            id="pandas-profiling-btn",
+                            role="button",
+                            className="button"
+                        ),
+                        html.A(
+                            "Show Sweetviz Profiling Report",
+                            href=f"/static/{SWEETVIZ_REPORT}",
+                            target="_blank",
+                            rel="noopener noreferrer",
+                            id="sweetviz-btn",
+                            role="button",
+                            className="button"
+                        ),
+                        html.A(
+                            "Return to the Dashboard",
+                            href="/",
+                            id="return-dashboard-btn",
+                            role="button",
+                            className="button"
+                        )
+                    ],
+                    className="pretty_container twelve columns item-column"
+                ),
+            ],
+            className="row flex-display center-content"
         )
-    ],
-        className="row flex-display",
-    ),
-    html.H2('Hello World'),
-    dcc.Dropdown(
-        id='dropdown',
-        options=[{'label': i, 'value': i} for i in ['LA', 'NYC', 'MTL']],
-        value='LA'
-    ),
-    html.Div(id='display-value')
+])
+
+examples_layout = html.Div([
+        html.Div([
+            dcc.Graph(
+                id='histogram-year-line',
+                figure=histogram_year_line,
+                className="pretty_container twelve columns"
+            )
+        ],
+            className="row flex-display",
+        ),
+        html.H2('Hello World'),
+        dcc.Dropdown(
+            id='dropdown',
+            options=[{'label': i, 'value': i} for i in ['LA', 'NYC', 'MTL']],
+            value='LA'
+        ),
+        html.Div(id='display-value')
 ])
 
 
@@ -258,8 +309,8 @@ def display_value(value):
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
 def display_page(pathname):
-    if pathname == '/dtale':
-        return None
+    if pathname == '/dataset':
+        return dataset_layout
     elif pathname == '/examples':
         return examples_layout
     else:

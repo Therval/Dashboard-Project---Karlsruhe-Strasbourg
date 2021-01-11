@@ -12,15 +12,20 @@
     text-align: justify;
 }
 
-.header {
-    text-align: center;
+.center-content {
+    justify-content: center;
 }
 
 .item-column {
     height: 100%;
+    max-width: 400px;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    padding-right: 50px;
-    padding-left: 50px;
+    padding-right: 40px;
+    padding-left: 40px;
+}
+
+button, .button {
+    margin: 10px;
 }
