@@ -13,7 +13,8 @@ import pandas as pd
 DATASET_PATH = 'dataset/papers.parquet'
 
 # Set color scheme
-COLOR_SEQUENCE = px.colors.sequential.Aggrnyl
+COLOR_SEQU = px.colors.sequential.Aggrnyl
+COLOR_QUAL = px.colors.qualitative.Antique
 COLOR_MAP = {
     'Academia': '#245668',
     'Company': '#ecee5d'
@@ -105,7 +106,7 @@ choropleth_map = px.choropleth(
     hover_name='Country',
     hover_data=['Academia', 'Company'],
     labels=LABELS,
-    color_continuous_scale=COLOR_SEQUENCE,
+    color_continuous_scale=COLOR_SEQU,
     range_color=[0, 15],
     title='Company to Academia Ratio',
     center={'lat': 20}
@@ -115,7 +116,8 @@ choropleth_map = px.choropleth(
     coloraxis_colorbar=dict(
         title='Company Ratio',
         ticks='outside',
-        ticksuffix='%')
+        ticksuffix='%'
+    )
 ).update_geos(
     visible=False,
     showland=True,
@@ -137,27 +139,25 @@ app.layout = html.Div([
 analyses_layout = html.Div([
         html.Div([
                 html.Div([
-                        html.Div([
-                                html.H1(
-                                    'Exploring the Diffusion of Publications Between Academia and Companies',
-                                    id='main-title',
-                                ),
-                                html.H3(
-                                    'in the Field of Deep Learning',
-                                    id='subtitle',
-                                ),
-                                html.H6(
-                                    '''
-                                        Analyses of 283014 scientific papers which use deep learning.
-                                        The papers are published in the Web of Science core collection.
-                                    ''',
-                                    id='header-description'
-                                ),
-                        ])
+                        html.H1(
+                            'Exploring the Diffusion of Publications Between Academia and Companies',
+                            id='main-title',
+                        ),
+                        html.H3(
+                            'in the Field of Deep Learning',
+                            id='subtitle',
+                        ),
+                        html.H6(
+                            '''
+                                Analyses of 283014 scientific papers which use deep learning.
+                                The papers are published in the Web of Science core collection.
+                            ''',
+                            id='header-description'
+                        )
                     ],
                     id='title',
                     className='twelve columns',
-                ),
+                )
             ],
             id='header',
             className='row flex-display',
@@ -173,19 +173,27 @@ analyses_layout = html.Div([
                     id='pie-org',
                     figure=pie_org,
                     className="pretty_container four columns"
-                ),
+                )
             ],
             className="row flex-display",
         ),
-        dcc.Graph(
-            id='histogram-year-line',
-            figure=histogram_year_line,
-            className="pretty_container"
+        html.Div([
+                dcc.Graph(
+                    id='histogram-year-line',
+                    figure=histogram_year_line,
+                    className="pretty_container twelve columns"
+                )
+            ],
+            className="row flex-display",
         ),
-        dcc.Graph(
-            id='choropleth-map',
-            figure=choropleth_map,
-            className="pretty_container"
+        html.Div([
+                dcc.Graph(
+                    id='choropleth-map',
+                    figure=choropleth_map,
+                    className="pretty_container twelve columns"
+                )
+            ],
+            className="row flex-display",
         ),
         html.Div([
                 html.A([
