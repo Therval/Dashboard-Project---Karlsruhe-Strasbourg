@@ -136,27 +136,58 @@ analyses_layout = html.Div([
                 html.Div([
                         html.H1(
                             'Exploring the Diffusion of Publications Between Academia and Companies',
-                            id='main-title',
+                            id='main-title'
                         ),
                         html.H3(
                             'in the Field of Deep Learning',
-                            id='subtitle',
+                            id='subtitle'
                         ),
-                        html.H6(
-                            '''
-                                Analyses of 283014 scientific papers which use deep learning.
-                                The papers are published in the Web of Science core collection.
-                            ''',
-                            id='header-description'
-                        )
                     ],
                     id='title',
-                    className='twelve columns',
+                    className='twelve columns'
                 )
             ],
             id='header',
-            className='row flex-display',
-            style={'margin-bottom': '25px'},
+            className='row flex-display'
+        ),
+        html.Div([
+                html.Div([
+                        html.H6(
+                            '''
+This dashboard shows the diffusion of publications between academia and companies in the field of Deep Learning.
+It includes a total of 283014 scientific publications.
+These papers were published in the Web of Science Core Collection.
+The papers were retrieved through web scraping.
+The use of deep learning was identified through keyword search in the title and abstract.
+The author metadata was used for the classification into company or academia publications.
+To learn more about the descriptions of the dashboard graphs and their functions click on "Learn More".
+                            ''',
+                            className="ten columns"
+                        ),
+                        html.Div([
+                                html.A(
+                                    "Learn More",
+                                    href="/description",
+                                    id="learn-more",
+                                    role="button",
+                                    className="button"
+                                ),
+                                html.A(
+                                    "Explore Dataset",
+                                    href="/dataset",
+                                    id="explore-dataset",
+                                    role="button",
+                                    className="button"
+                                )
+                            ],
+                            className="two columns item-column"
+                        )
+                    ],
+                    className="pretty_container twelve columns"
+                ),
+            ],
+            id='header-description',
+            className="row flex-display"
         ),
         html.Div([
                 dcc.Graph(
@@ -170,7 +201,7 @@ analyses_layout = html.Div([
                     className="pretty_container four columns"
                 )
             ],
-            className="row flex-display",
+            className="row flex-display"
         ),
         html.Div([
                 dcc.Graph(
@@ -179,20 +210,22 @@ analyses_layout = html.Div([
                     className="pretty_container twelve columns"
                 )
             ],
-            className="row flex-display",
+            className="row flex-display"
         ),
         html.Div([
                 html.A([
                         'Example charts',
                     ],
-                    href='/examples'
+                    href='/examples',
+                    role="button",
+                    className='button'
                 )
             ],
-            className='footer'
+            className='row flex-display'
         )
 ])
 
-examples_layout = html.Div(children=[
+examples_layout = html.Div([
     html.Div([
         dcc.Graph(
             id='histogram-year-line',

@@ -79,9 +79,12 @@ This project mainly uses:
 
 ## Dataset
 
-The dataset contains 283014 scientific papers which use deep learning.
-They are identified through keyword search in the title and abstract.
-The papers are published in the Web of Science core collection.
+This dataset includes a total of 283014 scientific publications which use deep learning.
+These papers were published in the Web of Science Core Collection.
+The papers were retrieved through web scraping.
+The use of deep learning was identified through keyword search in the title and abstract.
+The author metadata was used for the classification into company or academia publications.
+
 The classification of research areas can be found here:
 [webofknowledge.com](https://images.webofknowledge.com/images/help/WOS/hp_research_areas_easca.html)
 
