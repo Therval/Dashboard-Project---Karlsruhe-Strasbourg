@@ -12,11 +12,13 @@ import pandas as pd
 
 DATASET_PATH = 'dataset/papers.parquet'
 
+# Set color scheme
 COLOR_SEQUENCE = px.colors.sequential.Aggrnyl
 COLOR_MAP = {
     'Academia': '#245668',
     'Company': '#ecee5d'
 }
+
 # Describe some labels
 LABELS = {
     'PY': 'Year Published',
@@ -41,10 +43,12 @@ df_sample = pd.DataFrame({
 
 # --- CALCULATE TABLES FOR CHARTS ---
 
+# Count of organisation
+org_count = pd.DataFrame({'Count': df.groupby(['Organisation']).size()}).reset_index()
 # Count of organisation by year
 year_org_count = pd.DataFrame({'Count': df.groupby(['PY', 'Organisation']).size()}).reset_index()
 
-# Count pf organisation by country
+# Count of organisation by country
 country_org_count = df.groupby(['CountryCode', 'Organisation']).size().unstack()
 # Flatten hierarchical columns
 country_org_count.columns = country_org_count.columns.tolist()
@@ -67,8 +71,18 @@ histogram_year = px.histogram(
     color_discrete_map=COLOR_MAP,
     labels=LABELS,
     title='Published Papers in the Data Set'
+).update_layout(
+    title_x=0.5
 )
-histogram_year.update_layout(
+
+pie_org = px.pie(
+    org_count,
+    values='Count',
+    names='Organisation',
+    color='Organisation',
+    color_discrete_map=COLOR_MAP,
+    title='Distribution of Academia vs Companies'
+).update_layout(
     title_x=0.5
 )
 
@@ -80,8 +94,7 @@ histogram_year_line = px.line(
     color_discrete_map=COLOR_MAP,
     labels=LABELS,
     title='Published Papers in the Data Set'
-)
-histogram_year_line.update_layout(
+).update_layout(
     title_x=0.5
 )
 
@@ -96,16 +109,14 @@ choropleth_map = px.choropleth(
     range_color=[0, 15],
     title='Company to Academia Ratio',
     center={'lat': 20}
-)
-choropleth_map.update_layout(
+).update_layout(
     title_x=0.5,
     height=800,
     coloraxis_colorbar=dict(
         title='Company Ratio',
         ticks='outside',
-        ticksuffix='%'
-    ))
-choropleth_map.update_geos(
+        ticksuffix='%')
+).update_geos(
     visible=False,
     showland=True,
     landcolor='#ccc',
@@ -152,10 +163,19 @@ analyses_layout = html.Div([
             className='row flex-display',
             style={'margin-bottom': '25px'},
         ),
-        dcc.Graph(
-            id='histogram-year',
-            figure=histogram_year,
-            className="pretty_container"
+        html.Div([
+                dcc.Graph(
+                    id='histogram-year',
+                    figure=histogram_year,
+                    className="pretty_container eight columns"
+                ),
+                dcc.Graph(
+                    id='pie-org',
+                    figure=pie_org,
+                    className="pretty_container four columns"
+                ),
+            ],
+            className="row flex-display",
         ),
         dcc.Graph(
             id='histogram-year-line',
