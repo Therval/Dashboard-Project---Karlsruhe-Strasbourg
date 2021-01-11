@@ -179,3 +179,15 @@ print("Memory reduction: ", round(100 - 100
 # - Parquet: a compressed file that memorizes dtypes
 # - Requires pyarrow: 'conda install -c conda-forge pyarrow' or 'pip install pyarrow'
 opt_df.to_parquet("papers.parquet", compression="gzip")
+
+# %% -- Create pandas profiling report
+# - https://github.com/pandas-profiling/pandas-profiling
+from pandas_profiling import ProfileReport
+pp_report = ProfileReport(opt_df, title="Papers - Pandas Profiling Report")
+pp_report.to_file("papers_pandas-profiling-report.html")
+
+# %% -- Create Sweetviz profiling report
+# - https://github.com/fbdesignpro/sweetviz
+import sweetviz
+sv_report = sweetviz.analyze(opt_df)
+sv_report.show_html(filepath="papers_sweetviz-report.html", open_browser=False)
