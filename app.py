@@ -66,7 +66,7 @@ histogram_year = px.histogram(
     color='Organisation',
     color_discrete_map=COLOR_MAP,
     labels=LABELS,
-    title='Histogram of papers in the data set by year'
+    title='Published Papers in the Data Set'
 )
 
 histogram_year_line = px.line(
@@ -76,7 +76,7 @@ histogram_year_line = px.line(
     color='Organisation',
     color_discrete_map=COLOR_MAP,
     labels=LABELS,
-    title='Histogram of papers in the data set by year (line chart)'
+    title='Published Papers in the Data Set'
 )
 
 choropleth_map = px.choropleth(
@@ -88,7 +88,7 @@ choropleth_map = px.choropleth(
     labels=LABELS,
     color_continuous_scale=COLOR_SEQUENCE,
     range_color=[0, 15],
-    title='Choropleth of Company to Academia Ratio',
+    title='Company to Academia Ratio',
     center={'lat': 20}
 )
 choropleth_map.update_layout(
@@ -147,15 +147,18 @@ analyses_layout = html.Div([
         ),
         dcc.Graph(
             id='histogram-year',
-            figure=histogram_year
+            figure=histogram_year,
+            className="pretty_container"
         ),
         dcc.Graph(
             id='histogram-year-line',
-            figure=histogram_year_line
+            figure=histogram_year_line,
+            className="pretty_container"
         ),
         dcc.Graph(
             id='choropleth-map',
-            figure=choropleth_map
+            figure=choropleth_map,
+            className="pretty_container"
         ),
         html.Div([
                 html.A([
