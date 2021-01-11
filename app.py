@@ -15,12 +15,12 @@ PANDASPROFILING_REPORT = 'papers_pandas-profiling-report.html'
 SWEETVIZ_REPORT = 'papers_sweetviz-report.html'
 
 # Set color scheme
-COLOR_SEQU = px.colors.sequential.Aggrnyl
-COLOR_QUAL = px.colors.qualitative.Antique
 COLOR_MAP = {
-    'Academia': '#245668',
-    'Company': '#ecee5d'
+    'Academia': '#3a6186',
+    'Company': '#89253e'
 }
+COLOR_SEQU = [(0, COLOR_MAP['Academia']), (1, COLOR_MAP['Company'])]
+COLOR_QUAL = px.colors.qualitative.Antique
 
 # Describe some labels
 LABELS = {
