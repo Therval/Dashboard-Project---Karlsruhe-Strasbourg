@@ -11,25 +11,51 @@ import plotly.express as px
 import pandas as pd
 
 DATASET_PATH = 'dataset/papers.parquet'
+
+COLOR_SEQUENCE = px.colors.sequential.Aggrnyl
+COLOR_MAP = {
+    'Academia': '#245668',
+    'Company': '#ecee5d'
+}
 # Describe some labels
 LABELS = {
-         'PY': 'Year Published',
-         'SC': 'Research Areas',
-         'NR': 'Cited Reference Count',
-         'TCperYear': 'WoS Core Cited Count per Year',
-         'NumAuthors': 'Number of Authors',
-         'CountryCode': 'Country Code'
-         }
+    'PY': 'Year Published',
+    'SC': 'Research Areas',
+    'NR': 'Cited Reference Count',
+    'TCperYear': 'WoS Core Cited Count per Year',
+    'NumAuthors': 'Number of Authors',
+    'CountryCode': 'Country Code'
+}
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
 server = app.server
 
+# Import dataset
 df = pd.read_parquet(DATASET_PATH)
 df_sample = pd.DataFrame({
-    'Fruit': ['Apples', 'Oranges', 'Bananas', 'Apples', 'Oranges', 'Bananas'],
-    'Amount': [4, 1, 2, 2, 4, 5],
-    'City': ['SF', 'SF', 'SF', 'Montreal', 'Montreal', 'Montreal']
+        'Fruit': ['Apples', 'Oranges', 'Bananas', 'Apples', 'Oranges', 'Bananas'],
+        'Amount': [4, 1, 2, 2, 4, 5],
+        'City': ['SF', 'SF', 'SF', 'Montreal', 'Montreal', 'Montreal']
 })
+
+
+# --- CALCULATE TABLES FOR CHARTS ---
+
+# Count of organisation by year
+year_org_count = pd.DataFrame({'Count': df.groupby(['PY', 'Organisation']).size()}).reset_index()
+
+# Count pf organisation by country
+country_org_count = df.groupby(['CountryCode', 'Organisation']).size().unstack()
+# Flatten hierarchical columns
+country_org_count.columns = country_org_count.columns.tolist()
+# Calculate company percentage
+country_org_count['CompanyPercentage'] = 100 / (country_org_count['Academia'] / country_org_count['Company'] + 1)
+# Add country names from dataset
+country_org_count = country_org_count.merge(
+    df[['CountryCode', 'Country']],
+    how='left',
+    on='CountryCode'
+).drop_duplicates()
 
 
 # --- DEFINE CHARTS ---
@@ -38,18 +64,46 @@ histogram_year = px.histogram(
     df,
     x='PY',
     color='Organisation',
+    color_discrete_map=COLOR_MAP,
     labels=LABELS,
     title='Histogram of papers in the data set by year'
 )
 
-df_group = pd.DataFrame({'Count': df.groupby(['PY', 'Organisation']).size()}).reset_index()
 histogram_year_line = px.line(
-    df_group,
+    year_org_count,
     x='PY',
     y='Count',
     color='Organisation',
+    color_discrete_map=COLOR_MAP,
     labels=LABELS,
     title='Histogram of papers in the data set by year (line chart)'
+)
+
+choropleth_map = px.choropleth(
+    country_org_count,
+    locations='CountryCode',
+    color='CompanyPercentage',
+    hover_name='Country',
+    hover_data=['Academia', 'Company'],
+    labels=LABELS,
+    color_continuous_scale=COLOR_SEQUENCE,
+    range_color=[0, 15],
+    title='Choropleth of Company to Academia Ratio',
+    center={'lat': 20}
+)
+choropleth_map.update_layout(
+    height=800,
+    coloraxis_colorbar=dict(
+        title='Company Ratio',
+        ticks='outside',
+        ticksuffix='%'
+    ))
+choropleth_map.update_geos(
+    visible=False,
+    showland=True,
+    landcolor='#ccc',
+    showcoastlines=True,
+    projection_type='natural earth'
 )
 
 fig_sample = px.bar(df_sample, x='Fruit', y='Amount', color='City', barmode='group')
@@ -67,11 +121,11 @@ analyses_layout = html.Div([
                 html.Div([
                         html.Div([
                                 html.H1(
-                                    'A Diffusion Between Academia and Companies',
+                                    'Exploring the Diffusion of Publications Between Academia and Companies',
                                     id='main-title',
                                 ),
                                 html.H3(
-                                    'of Published Scientific Papers Which Use Deep Learning',
+                                    'in the Field of Deep Learning',
                                     id='subtitle',
                                 ),
                                 html.H6(
@@ -98,6 +152,10 @@ analyses_layout = html.Div([
         dcc.Graph(
             id='histogram-year-line',
             figure=histogram_year_line
+        ),
+        dcc.Graph(
+            id='choropleth-map',
+            figure=choropleth_map
         ),
         html.Div([
                 html.A([
