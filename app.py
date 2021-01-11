@@ -30,16 +30,12 @@ LABELS = {
     'CountryCode': 'Country Code'
 }
 
+# Create application instance
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
 server = app.server
 
 # Import dataset
 df = pd.read_parquet(DATASET_PATH)
-df_sample = pd.DataFrame({
-        'Fruit': ['Apples', 'Oranges', 'Bananas', 'Apples', 'Oranges', 'Bananas'],
-        'Amount': [4, 1, 2, 2, 4, 5],
-        'City': ['SF', 'SF', 'SF', 'Montreal', 'Montreal', 'Montreal']
-})
 
 
 # --- CALCULATE TABLES FOR CHARTS ---
@@ -127,8 +123,6 @@ choropleth_map = px.choropleth(
     projection_type='natural earth'
 )
 
-fig_sample = px.bar(df_sample, x='Fruit', y='Amount', color='City', barmode='group')
-
 
 # --- LAYOUTS ---
 
@@ -180,15 +174,6 @@ analyses_layout = html.Div([
         ),
         html.Div([
                 dcc.Graph(
-                    id='histogram-year-line',
-                    figure=histogram_year_line,
-                    className="pretty_container twelve columns"
-                )
-            ],
-            className="row flex-display",
-        ),
-        html.Div([
-                dcc.Graph(
                     id='choropleth-map',
                     figure=choropleth_map,
                     className="pretty_container twelve columns"
@@ -208,11 +193,15 @@ analyses_layout = html.Div([
 ])
 
 examples_layout = html.Div(children=[
-    dcc.Graph(
-        id='example-graph',
-        figure=fig_sample
+    html.Div([
+        dcc.Graph(
+            id='histogram-year-line',
+            figure=histogram_year_line,
+            className="pretty_container twelve columns"
+        )
+    ],
+        className="row flex-display",
     ),
-
     html.H2('Hello World'),
     dcc.Dropdown(
         id='dropdown',
