@@ -68,6 +68,9 @@ histogram_year = px.histogram(
     labels=LABELS,
     title='Published Papers in the Data Set'
 )
+histogram_year.update_layout(
+    title_x=0.5
+)
 
 histogram_year_line = px.line(
     year_org_count,
@@ -77,6 +80,9 @@ histogram_year_line = px.line(
     color_discrete_map=COLOR_MAP,
     labels=LABELS,
     title='Published Papers in the Data Set'
+)
+histogram_year_line.update_layout(
+    title_x=0.5
 )
 
 choropleth_map = px.choropleth(
@@ -92,6 +98,7 @@ choropleth_map = px.choropleth(
     center={'lat': 20}
 )
 choropleth_map.update_layout(
+    title_x=0.5,
     height=800,
     coloraxis_colorbar=dict(
         title='Company Ratio',
