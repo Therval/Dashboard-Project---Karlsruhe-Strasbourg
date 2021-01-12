@@ -4,6 +4,8 @@ Data processing
 # %% -- Load needed libraries
 print("In order to run this script you need pandas, numpy, pycountry and pyarrow installed")
 import pandas as pd
+import re
+from tqdm import tqdm_notebook
 import numpy as np
 import pycountry
 
@@ -16,55 +18,102 @@ papers = pd.read_csv("DL_PAPER_1990_2018.tsv", sep='\t')
 papers.dropna(subset=["C1"], inplace=True, axis=0)
 # Drop duplicates, if they exist
 papers.drop_duplicates(subset=["AB"], inplace=True)
+papers = papers.reset_index()
 
-# %% -- Identify pattern in order to get university/firms names for each observation
-papers.C1.head(20)
+# %%
+"Lot of issue with observations where we have a pattern like this: [name"
+papers.C1 = [re.sub("[\(\[].*?[\)\]]", "", sentence).lstrip() for sentence in tqdm_notebook(papers.C1)]
+
+# %% 
 """
 Pattern: name always before the first comma
 So, we can extract this information with a more efficient way than regex
 """
-names = []
+names_1 = []
+names_2 = []
 for obs in papers.C1:
-    names.append(obs.split(',', 1)[0])  # add nsplits = 1 for efficiency
-papers.C1 = names
-del names
+    sentence = obs.split(';', 1)[0]
+    names_1.append(sentence.split(',', 1)[0])
+    try:
+        sentence = obs.split(';', 1)[1]
+        names_2.append(sentence.split(',', 1)[0])
+    except IndexError:
+        names_2.append(np.nan)
+
+papers.C1 = names_1
+papers["C2"] = names_2
+del names_1, names_2, obs, sentence
 
 # %% -- Show results
-papers.C1.head(20)  # Good!
+print(papers.C1.head(20), papers.C2.head(20))  # Good!
 
 # %% -- Replace "Univ" by "University" ; "Inst" by "Institute" ; "Acad" by "Academy"
 papers.C1 = papers.C1.str.replace("Univ", "University")
-papers.C1 = papers.C1.str.replace("UNIV", "University")  # In case of an issue with the first one
+papers.C1 = papers.C1.str.replace("UNIV", "University")  # In case we have an issue with the first one
 papers.C1 = papers.C1.str.replace("Inst", "Institute")
 papers.C1 = papers.C1.str.replace("Acad", "Academy")
+papers.C1 = papers.C1.str.replace("Coll", "College")
+
+papers.C2 = papers.C2.str.replace("Univ", "University")
+papers.C2 = papers.C2.str.replace("UNIV", "University") 
+papers.C2 = papers.C2.str.replace("Inst", "Institute")
+papers.C2 = papers.C2.str.replace("Acad", "Academy")
+papers.C2 = papers.C2.str.replace("Coll", "College")
 
 # %% -- More information about firms
 # First, isolate which not contains "University"
 stopwords = ["Ecole", "University", "MIT", "CNR", "CNRS", "UMIST", "Institute", "ESCPI", "ENSCP",
-             "Academy", "UNR", "USA", "ESCPI", "INSA", "NASA", "UCL", "RIKEN", "LORIA", "IPN", "CSIC",
+             "Academy", "UNR", "USA", "ESCPI", "INSA", "NASA", "UCL", "RIKEN", "LORIA", "IPN", "CSIC", "CHU"
              "ETIS", "USAF", "Politecn", "Kings Coll London", "London Coll", "NYU", "IDSIA", "Coll Canada",
              "UNICAMP", "UTBM", "CSIRO", "Commiss European", "OECD", "USTHB", "UFRJ", "CEA", "UPC", "INRA",
-             "US FDA", "NOAA", "UNESP", "ENEA", "IIT", "SISSA", "IDIAP", "CUNY", "INSERM", "INRIA",
+             "US FDA", "NOAA", "UNESP", "ENEA", "IIT", "SISSA", "IDIAP", "CUNY", "INSERM", "INRIA", "College",
              "UNESCO", "INOAE", "NIST", "CERN", "CSIR", "Polytech", "EPFL", "MITS", "NIMH", "IFREMER"]
 pat = r"({})".format('|'.join(stopwords))
 filtered_pap = papers[~papers.C1.str.contains(pat, case=False, na=False)]
 
-# %% -- Sort by C1 and show unique value
-count = filtered_pap.C1.value_counts()
-"Lot of issue with observations where we have a pattern like this: [name"
-"A simple solution is to remove them, because we cannot now if they work for academia or company"
-filtered_pap = filtered_pap[~filtered_pap.C1.str.startswith("[")]
-count = filtered_pap.C1.value_counts()
+# %% Create separation between company only and joint paper 
+firms_stopwords = pd.unique(filtered_pap.C1.values)
 
-# %% -- Create new variable
-filtered_pap["Organisation"] = "Company"
-# Merge with papers dataset
+joined = filtered_pap[["C1","C2"]].values.tolist()
+
+types = []
+for obs in tqdm_notebook(joined):
+    if obs[1] is np.nan:
+        types.append("Company")
+    else:
+        if all(words in " ".join(firms_stopwords) for words in obs):
+            types.append("Company")
+        else:
+            types.append("Joint paper")
+
+filtered_pap["Organisation"] = types
+
 papers = papers.merge(filtered_pap, how="left")
-# Fill na by "Academia"
-papers.Organisation.fillna("Academia", inplace=True)
+
+# %% Redo the manipulation for other papers (i.e., academia)
+filtered_pap = papers[papers.Organisation.isna()]
+academic_stopwords = pd.unique(filtered_pap.C1.values)
+
+joined = filtered_pap[["C1","C2"]].values.tolist()
+
+types = []
+for obs in tqdm_notebook(joined):
+    if obs[1] is np.nan:
+        types.append("Academia")
+    else:
+        if all(word in " ".join(academic_stopwords) for word in obs):
+            types.append("Academia")
+        else:
+            types.append("Joint paper")
+
+filtered_pap["Organisation_bis"] = types
+
+papers = papers.merge(filtered_pap, how="left")
+papers.Organisation.fillna(papers.Organisation_bis, inplace=True)
 
 # %% -- Keep Only interesting variables
-papers = papers[["UT", "PY", "SC", "ArtsHumanities", "LifeSciencesBiomedicine", "PhysicalSciences", "SocialSciences",
+papers = papers[["UT", "PY", "SC", 
+                 "ArtsHumanities", "LifeSciencesBiomedicine", "PhysicalSciences", "SocialSciences",
                  "Technology", "ComputerScience", "Health", "NR", "TCperYear", "nb_aut", "Organisation"]]
 
 # %% -- Aggregate country and regions
