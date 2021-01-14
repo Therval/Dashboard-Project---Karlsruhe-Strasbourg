@@ -16,6 +16,10 @@
     justify-content: center;
 }
 
+.text-container {
+    max-width: 1000px;
+}
+
 .item-column {
     height: 100%;
     max-width: 400px;
