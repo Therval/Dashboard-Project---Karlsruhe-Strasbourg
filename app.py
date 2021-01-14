@@ -17,7 +17,8 @@ SWEETVIZ_REPORT = 'papers_sweetviz-report.html'
 # Set color scheme
 COLOR_MAP = {
     'Academia': '#3a6186',
-    'Company': '#89253e'
+    'Company': '#89253e',
+    'Collaboration': '#719F78'
 }
 COLOR_SEQU = [(0, COLOR_MAP['Academia']), (1, COLOR_MAP['Company'])]
 COLOR_QUAL = px.colors.qualitative.Antique
@@ -157,11 +158,11 @@ analyses_layout = html.Div([
                         html.H6(
                             '''
 This dashboard shows the diffusion of publications between academia and companies in the field of Deep Learning.
-It includes a total of 283014 scientific publications.
+It includes a total of 287544 scientific publications.
 These papers were published in the Web of Science Core Collection.
 The papers were retrieved through web scraping.
 The use of deep learning was identified through keyword search in the title and abstract.
-The author metadata was used for the classification into company or academia publications.
+The author metadata was used for classifying the publications into company, academia or collaborations of both.
 To learn more about the descriptions of the dashboard graphs and their functions click on "Learn More".
                             ''',
                             className="ten columns"

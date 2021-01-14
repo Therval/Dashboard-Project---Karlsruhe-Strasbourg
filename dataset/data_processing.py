@@ -2,11 +2,11 @@
 Data processing
 """
 # %% -- Load needed libraries
-print("In order to run this script you need pandas, numpy, pycountry and pyarrow installed")
+print("In order to run this script you need pandas, numpy, re, tqdm, pycountry and pyarrow installed")
 import pandas as pd
+import numpy as np
 import re
 from tqdm import tqdm_notebook
-import numpy as np
 import pycountry
 
 # %% -- Load dataset
@@ -20,14 +20,14 @@ papers.dropna(subset=["C1"], inplace=True, axis=0)
 papers.drop_duplicates(subset=["AB"], inplace=True)
 papers = papers.reset_index()
 
-# %%
-"Lot of issue with observations where we have a pattern like this: [name"
+# %% -- Clean fields
+"A lot of issues with observations where we have a pattern like this: [name"
 papers.C1 = [re.sub("[\(\[].*?[\)\]]", "", sentence).lstrip() for sentence in tqdm_notebook(papers.C1)]
 
-# %% 
+# %% -- Extract C1 information
 """
 Pattern: name always before the first comma
-So, we can extract this information with a more efficient way than regex
+We can extract this information with a more efficient way than regex
 """
 names_1 = []
 names_2 = []
@@ -39,7 +39,6 @@ for obs in papers.C1:
         names_2.append(sentence.split(',', 1)[0])
     except IndexError:
         names_2.append(np.nan)
-
 papers.C1 = names_1
 papers["C2"] = names_2
 del names_1, names_2, obs, sentence
@@ -71,11 +70,9 @@ stopwords = ["Ecole", "University", "MIT", "CNR", "CNRS", "UMIST", "Institute", 
 pat = r"({})".format('|'.join(stopwords))
 filtered_pap = papers[~papers.C1.str.contains(pat, case=False, na=False)]
 
-# %% Create separation between company only and joint paper 
+# %% -- Create separation between company only and collaborations
 firms_stopwords = pd.unique(filtered_pap.C1.values)
-
-joined = filtered_pap[["C1","C2"]].values.tolist()
-
+joined = filtered_pap[["C1", "C2"]].values.tolist()
 types = []
 for obs in tqdm_notebook(joined):
     if obs[1] is np.nan:
@@ -84,18 +81,15 @@ for obs in tqdm_notebook(joined):
         if all(words in " ".join(firms_stopwords) for words in obs):
             types.append("Company")
         else:
-            types.append("Joint paper")
+            types.append("Collaboration")
 
 filtered_pap["Organisation"] = types
-
 papers = papers.merge(filtered_pap, how="left")
 
-# %% Redo the manipulation for other papers (i.e., academia)
+# %% -- Redo the manipulation for other papers (i.e., academia)
 filtered_pap = papers[papers.Organisation.isna()]
 academic_stopwords = pd.unique(filtered_pap.C1.values)
-
 joined = filtered_pap[["C1","C2"]].values.tolist()
-
 types = []
 for obs in tqdm_notebook(joined):
     if obs[1] is np.nan:
@@ -104,16 +98,14 @@ for obs in tqdm_notebook(joined):
         if all(word in " ".join(academic_stopwords) for word in obs):
             types.append("Academia")
         else:
-            types.append("Joint paper")
+            types.append("Collaboration")
 
 filtered_pap["Organisation_bis"] = types
-
 papers = papers.merge(filtered_pap, how="left")
 papers.Organisation.fillna(papers.Organisation_bis, inplace=True)
 
 # %% -- Keep Only interesting variables
-papers = papers[["UT", "PY", "SC", 
-                 "ArtsHumanities", "LifeSciencesBiomedicine", "PhysicalSciences", "SocialSciences",
+papers = papers[["UT", "PY", "SC", "ArtsHumanities", "LifeSciencesBiomedicine", "PhysicalSciences", "SocialSciences",
                  "Technology", "ComputerScience", "Health", "NR", "TCperYear", "nb_aut", "Organisation"]]
 
 # %% -- Aggregate country and regions
@@ -169,6 +161,7 @@ def getCountryCode(country):
         return pycountry.countries.search_fuzzy(country)[0].alpha_3
     except:
         return np.nan
+
 ct["CountryCode"] = ct["Country"].apply(getCountryCode)
 # - Correct some country codes manually
 ct["CountryCode"].mask(ct["Country"] == "Guadeloupe", "GLP", inplace=True)
