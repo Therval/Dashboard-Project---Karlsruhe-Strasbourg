@@ -263,6 +263,13 @@ dataset_layout = html.Div([
                             className="button"
                         ),
                         html.A(
+                            "Read the Project Description",
+                            href="/description",
+                            id="learn-more-btn",
+                            role="button",
+                            className="button"
+                        ),
+                        html.A(
                             "Return to the Dashboard",
                             href="/",
                             id="return-dashboard-btn",
@@ -308,6 +315,60 @@ The classification of research areas can be found here:
         )
 ])
 
+description_layout = html.Div([
+        html.Div([
+                html.Div([
+                        html.H1(
+                            'Exploring the Diffusion of Publications Between Academia and Companies',
+                            id='main-title'
+                        ),
+                        html.H3(
+                            'in the Field of Deep Learning',
+                            id='subtitle'
+                        ),
+                    ],
+                    id='title',
+                    className='twelve columns'
+                )
+            ],
+            id='header',
+            className='row flex-display'
+        ),
+        html.Div([
+                html.Div([
+                        dcc.Markdown('''
+Learn More
+                        ''')
+                    ],
+                    className="pretty_container twelve columns text-container"
+                ),
+            ],
+            className="row flex-display center-content"
+        ),
+        html.Div([
+                html.Div([
+                        html.A(
+                            "Explore the Dataset",
+                            href="/dataset",
+                            id="explore-dataset-btn",
+                            role="button",
+                            className="button"
+                        ),
+                        html.A(
+                            "Return to the Dashboard",
+                            href="/",
+                            id="return-dashboard-btn",
+                            role="button",
+                            className="button"
+                        )
+                    ],
+                    className="pretty_container twelve columns item-column"
+                ),
+            ],
+            className="row flex-display center-content"
+        )
+])
+
 examples_layout = html.Div([
         html.Div([
             dcc.Graph(
@@ -341,11 +402,16 @@ def display_value(value):
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
 def display_page(pathname):
-    if pathname == '/dataset':
+    if pathname == '/':
+        return analyses_layout
+    elif pathname == '/dataset':
         return dataset_layout
+    elif pathname == '/description':
+        return description_layout
     elif pathname == '/examples':
         return examples_layout
     else:
+        # the default
         return analyses_layout
 
 
