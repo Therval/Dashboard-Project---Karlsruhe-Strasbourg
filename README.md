@@ -66,16 +66,13 @@ The files `runtime.txt`, `Procfile` and the requirement `gunicorn` are used for
 
 ## Dependencies
 
-This project mainly uses:
+This project uses:
 
 - [Python 3.8](https://www.python.org/)
-- [Gunicorn](https://gunicorn.org/)
-- [PyArrow](https://arrow.apache.org/docs/python/)
-- [Plotly Dash](https://plotly.com/dash/)
-- [D-Tale](https://github.com/man-group/dtale)
-- [Flask](https://flask.palletsprojects.com/)
-- [Werkzeug](https://palletsprojects.com/p/werkzeug/)
 - [Pandas](https://pandas.pydata.org/)
+- [Plotly Dash](https://plotly.com/dash/)
+- [PyArrow](https://arrow.apache.org/docs/python/)
+- [Gunicorn](https://gunicorn.org/)
 
 ## Dataset
 

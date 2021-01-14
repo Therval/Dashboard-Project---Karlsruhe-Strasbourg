@@ -2,7 +2,4 @@ gunicorn
 pyarrow
 plotly
 dash
-dtale
-flask
-werkzeug
 pandas

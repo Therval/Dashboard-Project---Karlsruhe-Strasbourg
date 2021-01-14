@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 """Run a D-Tale server."""
 
+# Running this requires the dtale package!
 # Run this app with `python dtale_app.py` and
 # visit http://localhost:8050/ in your web browser.
 
 import pandas as pd
-from flask import redirect, request, jsonify
+from flask import redirect, request
 from dtale.app import build_app
 from dtale.views import startup
 from dtale.global_state import cleanup
