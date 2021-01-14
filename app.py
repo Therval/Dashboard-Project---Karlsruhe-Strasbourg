@@ -9,6 +9,8 @@ import dash_core_components as dcc
 import dash_html_components as html
 import plotly.express as px
 import pandas as pd
+# Local import of the text strings
+from texts import HEADER_INTRO_TXT, DATASET_FEATURES_TXT, PROJECT_DESCRIPTION_TXT
 
 DATASET_PATH = 'dataset/papers.parquet'
 PANDASPROFILING_REPORT = 'papers_pandas-profiling-report.html'
@@ -134,6 +136,9 @@ app.layout = html.Div([
     html.Div(id='page-content')
 ])
 
+
+# --- ANALYSES ---
+
 analyses_layout = html.Div([
         html.Div([
                 html.Div([
@@ -156,15 +161,7 @@ analyses_layout = html.Div([
         html.Div([
                 html.Div([
                         html.H6(
-                            '''
-This dashboard shows the diffusion of publications between academia and companies in the field of Deep Learning.
-It includes a total of 287544 scientific publications.
-These papers were published in the Web of Science Core Collection.
-The papers were retrieved through web scraping.
-The use of deep learning was identified through keyword search in the title and abstract.
-The author metadata was used for classifying the publications into company, academia or collaborations of both.
-To learn more about the descriptions of the dashboard graphs and their functions click on "Learn More".
-                            ''',
+                            HEADER_INTRO_TXT,
                             className="ten columns"
                         ),
                         html.Div([
@@ -228,6 +225,9 @@ To learn more about the descriptions of the dashboard graphs and their functions
         )
 ])
 
+
+# --- DATASET ---
+
 dataset_layout = html.Div([
         html.Div([
                 html.Div([
@@ -241,6 +241,15 @@ dataset_layout = html.Div([
             ],
             id='header',
             className='row flex-display'
+        ),
+        html.Div([
+            html.Div([
+                dcc.Markdown(DATASET_FEATURES_TXT)
+            ],
+                className="pretty_container twelve columns flex-display center-content text-container"
+            ),
+        ],
+            className="row flex-display center-content"
         ),
         html.Div([
                 html.Div([
@@ -281,39 +290,11 @@ dataset_layout = html.Div([
                 ),
             ],
             className="row flex-display center-content"
-        ),
-        html.Div([
-                html.Div([
-                        dcc.Markdown('''
-| Feature                   | Description                                               | Data Type             |
-|---------------------------|-----------------------------------------------------------|-----------------------|
-| `PY`                      | Year Published                                            | integer               |
-| `SC`                      | Research Areas                                            | string / category     |
-| `ArtsHumanities`          | Research Area                                             | float between 0 and 1 |
-| `LifeSciencesBiomedicine` | Research Area                                             | float between 0 and 1 |
-| `PhysicalSciences`        | Research Area                                             | float between 0 and 1 |
-| `SocialSciences`          | Research Area                                             | float between 0 and 1 |
-| `Technology`              | Research Area                                             | float between 0 and 1 |
-| `ComputerScience`         | A Subset of `Technology`                                  | integer 0 or 1        |
-| `Health`                  | A Subset of `LifeSciencesBiomedicine`                     | integer 0 or 1        |
-| `NR`                      | Cited Reference Count                                     | integer               |
-| `TCperYear`               | Web of Science Core Collection Times Cited Count per Year | float                 |
-| `NumAuthors`              | Number of Authors                                         | integer               |
-| `Organisation`            | Either "Academia", "Company" or "Collaboration"           | string / category     |
-| `Region`                  | 9 Different Regions                                       | string / category     |
-| `Country`                 | Country Name of Author                                    | string / category     |
-| `CountryCode`             | ISO 3166-1 Alpha-3 Country Code                           | string / category     |
-
-The classification of research areas can be found here:
-[webofknowledge.com](https://images.webofknowledge.com/images/help/WOS/hp_research_areas_easca.html)
-                        ''')
-                    ],
-                    className="pretty_container twelve columns flex-display center-content text-container"
-                ),
-            ],
-            className="row flex-display center-content"
         )
 ])
+
+
+# --- DESCRIPTION ---
 
 description_layout = html.Div([
         html.Div([
@@ -336,9 +317,7 @@ description_layout = html.Div([
         ),
         html.Div([
                 html.Div([
-                        dcc.Markdown('''
-Learn More
-                        ''')
+                        dcc.Markdown(PROJECT_DESCRIPTION_TXT)
                     ],
                     className="pretty_container twelve columns text-container"
                 ),
