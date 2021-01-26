@@ -383,12 +383,15 @@ analyses_layout = html.Div([
             ],
             className='row flex-display'
         ),
-        dcc.Tabs(id='map-tabs', value='comp-acad-collab', children=[
-            dcc.Tab(label='Company vs Academia w/ Collab.', value='comp-acad-collab'),
-            dcc.Tab(label='Company vs Academia', value='comp-acad'),
-            dcc.Tab(label='Company vs Collaboration', value='comp-collab'),
-            dcc.Tab(label='Collaboration vs Academia', value='collab-acad')
-        ]),
+        dcc.Tabs([
+                dcc.Tab(label='Company vs Academia w/ Collab.', value='comp-acad-collab'),
+                dcc.Tab(label='Company vs Academia', value='comp-acad'),
+                dcc.Tab(label='Company vs Collaboration', value='comp-collab'),
+                dcc.Tab(label='Collaboration vs Academia', value='collab-acad')
+            ],
+            id='map-tabs',
+            value='comp-acad-collab'
+        ),
         html.Div(
             id='map-container',
             className='row pretty_container'
