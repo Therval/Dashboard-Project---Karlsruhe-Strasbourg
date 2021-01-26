@@ -40,19 +40,8 @@ LABELS = {
     'ArtsHumanities': 'Arts & Humanities',
     'LifeSciencesBiomedicine': 'Life Sciences & Biomedicine',
     'PhysicalSciences': 'Physical Sciences',
-    'SocialSciences': 'Social Sciences',
-    '': ''
+    'SocialSciences': 'Social Sciences'
 }
-
-
-# --- INITIATE THE APP ---
-
-def improve_legend_labels(fig):
-    for i, data in enumerate(fig.data):
-        for element in data:
-            if element == 'name':
-                fig.data[i].name = LABELS[fig.data[i].name]
-    return fig
 
 
 # --- INITIATE THE APP ---
@@ -94,10 +83,10 @@ category_org_count = df[[
         'Technology',
         'Organisation'
 ]].replace(0, np.nan).groupby('Organisation').agg('count').T
-# Set column names properly and reset the index
+# Set names properly and reset the index
 category_org_count.columns = category_org_count.columns.tolist()
 category_org_count['Total'] = category_org_count.sum(axis='columns')
-category_org_count = category_org_count.reset_index().rename({'index': 'Category'}, axis='columns')
+category_org_count = category_org_count.reset_index().rename({'index': 'Category'}, axis='columns').replace(LABELS)
 
 
 # --- DEFINE CHARTS ---
@@ -158,6 +147,7 @@ pie_cat_academia = px.pie(
     names='Category',
     color='Category',
     color_discrete_sequence=COLOR_QUAL,
+    labels=LABELS,
     title='Academia'
 ).update_layout(
     showlegend=False,
@@ -170,6 +160,7 @@ pie_cat_companies = px.pie(
     names='Category',
     color='Category',
     color_discrete_sequence=COLOR_QUAL,
+    labels=LABELS,
     title='Companies'
 ).update_layout(
     showlegend=False,
@@ -182,23 +173,23 @@ pie_cat_collaborations = px.pie(
     names='Category',
     color='Category',
     color_discrete_sequence=COLOR_QUAL,
+    labels=LABELS,
     title='Collaborations'
 ).update_layout(
     showlegend=False,
     title_x=0.5
 )
 
-pie_cat_all = improve_legend_labels(
-    px.pie(
-        category_org_count,
-        values='Total',
-        names='Category',
-        color='Category',
-        color_discrete_sequence=COLOR_QUAL,
-        title='Overall'
-    ).update_layout(
-        title_x=0.5
-    )
+pie_cat_all = px.pie(
+    category_org_count,
+    values='Total',
+    names='Category',
+    color='Category',
+    color_discrete_sequence=COLOR_QUAL,
+    labels=LABELS,
+    title='Overall'
+).update_layout(
+    title_x=0.5
 )
 
 histogram_year_line = px.line(
