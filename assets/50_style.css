@@ -12,6 +12,17 @@
     text-align: justify;
 }
 
+#map-tabs {
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-bottom: 0;
+    margin-left: 10px;
+}
+
+#map-container {
+    margin-top: 0;
+}
+
 .center-content {
     justify-content: center;
 }
