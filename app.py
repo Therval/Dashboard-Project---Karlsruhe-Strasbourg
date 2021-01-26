@@ -137,7 +137,7 @@ choro_map_comp_acad = px.choropleth(
         (1, COLOR_MAP['Company'])
     ],
     range_color=[0, 20],
-    title='Company to Academia Paper Fraction',
+    title='Company to Academia Publication Fractions',
     center={'lat': 20}
 ).update_layout(
     title_x=0.5,
@@ -167,7 +167,7 @@ choro_map_comp_collab = px.choropleth(
         (1, COLOR_MAP['Company'])
     ],
     range_color=[0, 16],
-    title='Company to Collaboration Paper Fraction',
+    title='Company to Collaboration Publication Fractions',
     center={'lat': 20}
 ).update_layout(
     title_x=0.5,
@@ -197,7 +197,7 @@ choro_map_collab_acad = px.choropleth(
         (1, COLOR_MAP['Collaboration'])
     ],
     range_color=[40, 100],
-    title='Collaboration to Academia Paper Fraction',
+    title='Collaboration to Academia Publication Fractions',
     center={'lat': 20}
 ).update_layout(
     title_x=0.5,
@@ -227,7 +227,7 @@ choro_map_comp_acad_collab = px.choropleth(
         (1, COLOR_MAP['Company'])
     ],
     range_color=[30, 50],
-    title='Company to Academia Paper Fraction (Collab. count for both)',
+    title='Company to Academia Publication Fractions (Collab. count for both)',
     center={'lat': 20}
 ).update_layout(
     title_x=0.5,
