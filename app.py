@@ -394,28 +394,40 @@ analyses_layout = html.Div([
             className="row pretty_container"
         ),
         html.Div([
-                dcc.Graph(
-                    id='pie-cat-academia',
-                    figure=pie_cat_academia,
-                    className="three columns"
+                html.Div([
+                        html.H5(
+                            'Research Area Distribution',
+                            className='center-content flex-display twelve columns'
+                        )
+                    ],
+                    className='row flex-display'
                 ),
-                dcc.Graph(
-                    id='pie-cat-companies',
-                    figure=pie_cat_companies,
-                    className="three columns"
-                ),
-                dcc.Graph(
-                    id='pie-cat-collaborations',
-                    figure=pie_cat_collaborations,
-                    className="three columns"
-                ),
-                dcc.Graph(
-                    id='pie-cat-all',
-                    figure=pie_cat_all,
-                    className="five columns"
+                html.Div([
+                        dcc.Graph(
+                            id='pie-cat-all',
+                            figure=pie_cat_all,
+                            className="five columns"
+                        ),
+                        dcc.Graph(
+                            id='pie-cat-academia',
+                            figure=pie_cat_academia,
+                            className="three columns"
+                        ),
+                        dcc.Graph(
+                            id='pie-cat-companies',
+                            figure=pie_cat_companies,
+                            className="three columns"
+                        ),
+                        dcc.Graph(
+                            id='pie-cat-collaborations',
+                            figure=pie_cat_collaborations,
+                            className="three columns"
+                        )
+                    ],
+                    className='row flex-display'
                 ),
             ],
-            className="pretty_container row flex-display"
+            className='pretty_container'
         ),
         html.Div([
                 html.A([
