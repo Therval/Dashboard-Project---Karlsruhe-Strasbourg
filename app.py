@@ -9,8 +9,12 @@ import dash_core_components as dcc
 import dash_html_components as html
 import plotly.express as px
 import pandas as pd
+import numpy as np
 # Local import of the text strings
 from texts import HEADER_INTRO_TXT, DATASET_FEATURES_TXT, PROJECT_DESCRIPTION_TXT
+
+
+# --- SET THE CONSTANTS ---
 
 DATASET_PATH = 'dataset/papers.parquet'
 PANDASPROFILING_REPORT = 'papers_pandas-profiling-report.html'
@@ -32,8 +36,26 @@ LABELS = {
     'NR': 'Cited Reference Count',
     'TCperYear': 'WoS Core Cited Count per Year',
     'NumAuthors': 'Number of Authors',
-    'CountryCode': 'Country Code'
+    'CountryCode': 'Country Code',
+    'ArtsHumanities': 'Arts & Humanities',
+    'LifeSciencesBiomedicine': 'Life Sciences & Biomedicine',
+    'PhysicalSciences': 'Physical Sciences',
+    'SocialSciences': 'Social Sciences',
+    '': ''
 }
+
+
+# --- INITIATE THE APP ---
+
+def improve_legend_labels(fig):
+    for i, data in enumerate(fig.data):
+        for element in data:
+            if element == 'name':
+                fig.data[i].name = LABELS[fig.data[i].name]
+    return fig
+
+
+# --- INITIATE THE APP ---
 
 # Create application instance
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
@@ -63,6 +85,20 @@ country_org_count = country_org_count.merge(
     on='CountryCode'
 ).drop_duplicates()
 
+# Count of organization type for each category
+category_org_count = df[[
+        'ArtsHumanities',
+        'LifeSciencesBiomedicine',
+        'PhysicalSciences',
+        'SocialSciences',
+        'Technology',
+        'Organisation'
+]].replace(0, np.nan).groupby('Organisation').agg('count').T
+# Set column names properly and reset the index
+category_org_count.columns = category_org_count.columns.tolist()
+category_org_count['Total'] = category_org_count.sum(axis='columns')
+category_org_count = category_org_count.reset_index().rename({'index': 'Category'}, axis='columns')
+
 
 # --- DEFINE CHARTS ---
 
@@ -85,18 +121,6 @@ pie_org = px.pie(
     color='Organisation',
     color_discrete_map=COLOR_MAP,
     title='Distribution of Academia vs Companies'
-).update_layout(
-    title_x=0.5
-)
-
-histogram_year_line = px.line(
-    year_org_count,
-    x='PY',
-    y='Count',
-    color='Organisation',
-    color_discrete_map=COLOR_MAP,
-    labels=LABELS,
-    title='Published Papers in the Data Set'
 ).update_layout(
     title_x=0.5
 )
@@ -126,6 +150,67 @@ choropleth_map = px.choropleth(
     landcolor='#ccc',
     showcoastlines=True,
     projection_type='natural earth'
+)
+
+pie_cat_academia = px.pie(
+    category_org_count,
+    values='Academia',
+    names='Category',
+    color='Category',
+    color_discrete_sequence=COLOR_QUAL,
+    title='Academia'
+).update_layout(
+    showlegend=False,
+    title_x=0.5
+)
+
+pie_cat_companies = px.pie(
+    category_org_count,
+    values='Company',
+    names='Category',
+    color='Category',
+    color_discrete_sequence=COLOR_QUAL,
+    title='Companies'
+).update_layout(
+    showlegend=False,
+    title_x=0.5
+)
+
+pie_cat_collaborations = px.pie(
+    category_org_count,
+    values='Collaboration',
+    names='Category',
+    color='Category',
+    color_discrete_sequence=COLOR_QUAL,
+    title='Collaborations'
+).update_layout(
+    showlegend=False,
+    title_x=0.5
+)
+
+pie_cat_all = improve_legend_labels(
+    px.pie(
+        category_org_count,
+        values='Total',
+        names='Category',
+        color='Category',
+        color_discrete_sequence=COLOR_QUAL,
+        title='Overall'
+    ).update_layout(
+        title_x=0.5
+    )
+)
+
+histogram_year_line = px.line(
+    year_org_count,
+    x='PY',
+    y='Count',
+    color='Organisation',
+    color_discrete_map=COLOR_MAP,
+    labels=LABELS,
+    title='Published Papers in the Data Set'
+).update_layout(
+    title_x=0.5
 )
 
 
@@ -183,7 +268,7 @@ analyses_layout = html.Div([
                             className="two columns item-column"
                         )
                     ],
-                    className="pretty_container twelve columns"
+                    className="pretty_container"
                 ),
             ],
             id='header-description',
@@ -211,6 +296,30 @@ analyses_layout = html.Div([
                 )
             ],
             className="row flex-display"
+        ),
+        html.Div([
+                dcc.Graph(
+                    id='pie-cat-academia',
+                    figure=pie_cat_academia,
+                    className="three columns"
+                ),
+                dcc.Graph(
+                    id='pie-cat-companies',
+                    figure=pie_cat_companies,
+                    className="three columns"
+                ),
+                dcc.Graph(
+                    id='pie-cat-collaborations',
+                    figure=pie_cat_collaborations,
+                    className="three columns"
+                ),
+                dcc.Graph(
+                    id='pie-cat-all',
+                    figure=pie_cat_all,
+                    className="five columns"
+                ),
+            ],
+            className="pretty_container row flex-display"
         ),
         html.Div([
                 html.A([

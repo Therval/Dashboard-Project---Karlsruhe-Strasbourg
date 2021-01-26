@@ -30,6 +30,10 @@
     padding-left: 40px;
 }
 
+.pretty_container {
+	background-color: #fff;
+}
+
 button, .button {
     margin: 10px;
 }
