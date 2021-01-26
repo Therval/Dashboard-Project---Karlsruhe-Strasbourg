@@ -227,7 +227,7 @@ choro_map_comp_acad_collab = px.choropleth(
         (1, COLOR_MAP['Company'])
     ],
     range_color=[30, 50],
-    title='Company to Academia Paper Fraction (Collab. counts for both)',
+    title='Company to Academia Paper Fraction (Collab. count for both)',
     center={'lat': 20}
 ).update_layout(
     title_x=0.5,
