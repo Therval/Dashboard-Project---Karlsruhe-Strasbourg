@@ -21,14 +21,6 @@ DATASET_PATH = 'dataset/papers.parquet'
 PANDASPROFILING_REPORT = 'papers_pandas-profiling-report.html'
 SWEETVIZ_REPORT = 'papers_sweetviz-report.html'
 
-# Set color scheme
-COLOR_MAP = {
-    'Academia': '#3a6186',
-    'Company': '#89253e',
-    'Collaboration': '#719F78'
-}
-COLOR_QUAL = px.colors.qualitative.Antique
-
 # Describe some labels
 LABELS = {
     'PY': 'Year Published',
@@ -42,6 +34,16 @@ LABELS = {
     'PhysicalSciences': 'Physical Sciences',
     'SocialSciences': 'Social Sciences'
 }
+
+# Set color scheme
+COLOR_MAP = {
+    'Academia': '#3a6186',
+    'Company': '#89253e',
+    'Collaboration': '#719F78'
+}
+color_list = px.colors.qualitative.Antique
+# Move grey to fifth position
+color_list.insert(4, color_list.pop(10))
 
 
 # --- INITIATE THE APP ---
@@ -250,7 +252,7 @@ pie_cat_academia = px.pie(
     values='Academia',
     names='Category',
     color='Category',
-    color_discrete_sequence=COLOR_QUAL,
+    color_discrete_sequence=color_list,
     labels=LABELS,
     title='Academia'
 ).update_layout(
@@ -263,7 +265,7 @@ pie_cat_companies = px.pie(
     values='Company',
     names='Category',
     color='Category',
-    color_discrete_sequence=COLOR_QUAL,
+    color_discrete_sequence=color_list,
     labels=LABELS,
     title='Companies'
 ).update_layout(
@@ -276,7 +278,7 @@ pie_cat_collaborations = px.pie(
     values='Collaboration',
     names='Category',
     color='Category',
-    color_discrete_sequence=COLOR_QUAL,
+    color_discrete_sequence=color_list,
     labels=LABELS,
     title='Collaborations'
 ).update_layout(
@@ -289,7 +291,7 @@ pie_cat_all = px.pie(
     values='Total',
     names='Category',
     color='Category',
-    color_discrete_sequence=COLOR_QUAL,
+    color_discrete_sequence=color_list,
     labels=LABELS,
     title='Overall'
 ).update_layout(
