@@ -12,6 +12,10 @@
     text-align: justify;
 }
 
+div#category-filter {
+    min-width: 210px;
+}
+
 #map-tabs {
     margin-top: 10px;
     margin-right: 10px;

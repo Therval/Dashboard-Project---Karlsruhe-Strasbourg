@@ -21,7 +21,15 @@ DATASET_PATH = 'dataset/papers.parquet'
 PANDASPROFILING_REPORT = 'papers_pandas-profiling-report.html'
 SWEETVIZ_REPORT = 'papers_sweetviz-report.html'
 
-# Describe some labels
+RESEARCH_CATEGORIES = [
+    'ArtsHumanities',
+    'LifeSciencesBiomedicine',
+    'PhysicalSciences',
+    'SocialSciences',
+    'Technology'
+]
+
+# Describe some of the labels
 LABELS = {
     'PY': 'Year Published',
     'SC': 'Research Areas',
@@ -32,7 +40,8 @@ LABELS = {
     'ArtsHumanities': 'Arts & Humanities',
     'LifeSciencesBiomedicine': 'Life Sciences & Biomedicine',
     'PhysicalSciences': 'Physical Sciences',
-    'SocialSciences': 'Social Sciences'
+    'SocialSciences': 'Social Sciences',
+    'Technology': 'Technology'
 }
 
 # Set color scheme
@@ -57,6 +66,19 @@ df = pd.read_parquet(DATASET_PATH)
 
 
 # --- CALCULATE TABLES FOR CHARTS ---
+
+# Publication year range
+py_min = int(df['PY'].min())
+py_max = int(df['PY'].max())
+# This adds three dicts together to describe the markers of the year range:
+# There is marker every year with an empty label,
+# every five years there is a marker with the year as label
+# and there is the last year with a label
+year_range_marks = {
+    **{i: '' for i in range(py_min, py_max)},
+    **{i: str(i) for i in range(py_min, py_max, 5)},
+    **{py_max: str(py_max)}
+}
 
 # Count of organisation
 org_count = pd.DataFrame({'Count': df.groupby(['Organisation']).size()}).reset_index()
@@ -88,12 +110,8 @@ country_org_count['CompanyAcademiaCollabFraction'] = 100 / ((
 
 # Count of organization type for each category
 category_org_count = df[[
-        'ArtsHumanities',
-        'LifeSciencesBiomedicine',
-        'PhysicalSciences',
-        'SocialSciences',
-        'Technology',
-        'Organisation'
+    *RESEARCH_CATEGORIES,
+    'Organisation'
 ]].replace(0, np.nan).groupby('Organisation').agg('count').T
 # Flatten categorical columns
 category_org_count.columns = category_org_count.columns.tolist()
@@ -370,6 +388,41 @@ analyses_layout = html.Div([
             ],
             id='header-description',
             className='row flex-display'
+        ),
+        html.Div([
+                html.Div([
+                        html.P(
+                            'Filter by research area:',
+                            className='control_label two columns'
+                        ),
+                        dcc.Dropdown(
+                            id='category-filter',
+                            options=[{'label': LABELS[category], 'value': category}
+                                     for category in RESEARCH_CATEGORIES],
+                            multi=True,
+                            value=RESEARCH_CATEGORIES,
+                            className='dcc_control'
+                        )
+                    ],
+                    className='row flex-display'
+                ),
+                html.Div([
+                        html.P(
+                            'Filter by year published:',
+                            className='control_label two columns'
+                        ),
+                        dcc.RangeSlider(
+                            marks=year_range_marks,
+                            min=py_min,
+                            max=py_max,
+                            value=[py_min, py_max],
+                            className='dcc_control ten columns'
+                        )
+                    ],
+                    className='row flex-display'
+                ),
+            ],
+            className='pretty_container'
         ),
         html.Div([
                 dcc.Graph(
