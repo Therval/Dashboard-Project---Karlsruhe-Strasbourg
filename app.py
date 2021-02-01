@@ -7,7 +7,7 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import plotly.express as px
 import pandas as pd
 import numpy as np
@@ -65,7 +65,7 @@ server = app.server
 df = pd.read_parquet(DATASET_PATH)
 
 
-# --- CALCULATE TABLES FOR CHARTS ---
+# --- CALCULATIONS ---
 
 # Publication year range
 py_min = int(df['PY'].min())
@@ -79,254 +79,6 @@ year_range_marks = {
     **{i: str(i) for i in range(py_min, py_max, 5)},
     **{py_max: str(py_max)}
 }
-
-# Count of organisation
-org_count = pd.DataFrame({'Count': df.groupby(['Organisation']).size()}).reset_index()
-# Count of organisation by year
-year_org_count = pd.DataFrame({'Count': df.groupby(['PY', 'Organisation']).size()}).reset_index()
-
-# Count of organisation by country
-country_org_count = df.groupby(['CountryCode', 'Organisation']).size().unstack()
-# Flatten hierarchical columns
-country_org_count.columns = country_org_count.columns.tolist()
-# Add country names from dataset
-country_org_count = country_org_count.merge(
-    df[['CountryCode', 'Country']],
-    how='left',
-    on='CountryCode'
-).drop_duplicates().reset_index(drop=True)
-# Calculate fractions
-country_org_count['CompanyAcademiaFraction'] = 100 / (
-        country_org_count['Academia'] / country_org_count['Company'] + 1)
-country_org_count['CompanyCollaborationFraction'] = 100 / (
-        country_org_count['Collaboration'] / country_org_count['Company'] + 1)
-country_org_count['CollaborationAcademiaFraction'] = 100 / (
-        country_org_count['Academia'] / country_org_count['Collaboration'] + 1)
-country_org_count['CompanyAcademiaCollabFraction'] = 100 / ((
-        country_org_count['Academia'] + country_org_count['Collaboration']
-    ) / (
-        country_org_count['Company'] + country_org_count['Collaboration']
-    ) + 1)
-
-# Count of organization type for each category
-category_org_count = df[[
-    *RESEARCH_CATEGORIES,
-    'Organisation'
-]].replace(0, np.nan).groupby('Organisation').agg('count').T
-# Flatten categorical columns
-category_org_count.columns = category_org_count.columns.tolist()
-# Set names properly and reset the index
-category_org_count['Total'] = category_org_count.sum(axis='columns')
-category_org_count = category_org_count.reset_index().rename({'index': 'Category'}, axis='columns').replace(LABELS)
-
-
-# --- DEFINE CHARTS ---
-
-histogram_year = px.histogram(
-    df,
-    x='PY',
-    barmode='group',
-    color='Organisation',
-    color_discrete_map=COLOR_MAP,
-    labels=LABELS,
-    title='Published Papers in the Data Set'
-).update_layout(
-    title_x=0.5
-)
-
-pie_org = px.pie(
-    org_count,
-    values='Count',
-    names='Organisation',
-    color='Organisation',
-    color_discrete_map=COLOR_MAP,
-    title='Distribution of Academia vs Companies'
-).update_layout(
-    title_x=0.5
-)
-
-choro_map_comp_acad = px.choropleth(
-    country_org_count,
-    locations='CountryCode',
-    color='CompanyAcademiaFraction',
-    hover_name='Country',
-    hover_data=['Academia', 'Company', 'Collaboration'],
-    labels=LABELS,
-    color_continuous_scale=[
-        (0, COLOR_MAP['Academia']),
-        (1, COLOR_MAP['Company'])
-    ],
-    range_color=[0, 20],
-    title='Company to Academia Publication Fractions',
-    center={'lat': 20}
-).update_layout(
-    title_x=0.5,
-    height=800,
-    coloraxis_colorbar=dict(
-        title='Company Fraction',
-        ticks='outside',
-        ticksuffix='%'
-    )
-).update_geos(
-    visible=False,
-    showland=True,
-    landcolor='#ccc',
-    showcoastlines=True,
-    projection_type='natural earth'
-)
-
-choro_map_comp_collab = px.choropleth(
-    country_org_count,
-    locations='CountryCode',
-    color='CompanyCollaborationFraction',
-    hover_name='Country',
-    hover_data=['Academia', 'Company', 'Collaboration'],
-    labels=LABELS,
-    color_continuous_scale=[
-        (0, COLOR_MAP['Collaboration']),
-        (1, COLOR_MAP['Company'])
-    ],
-    range_color=[0, 16],
-    title='Company to Collaboration Publication Fractions',
-    center={'lat': 20}
-).update_layout(
-    title_x=0.5,
-    height=800,
-    coloraxis_colorbar=dict(
-        title='Company Fraction',
-        ticks='outside',
-        ticksuffix='%'
-    )
-).update_geos(
-    visible=False,
-    showland=True,
-    landcolor='#ccc',
-    showcoastlines=True,
-    projection_type='natural earth'
-)
-
-choro_map_collab_acad = px.choropleth(
-    country_org_count,
-    locations='CountryCode',
-    color='CollaborationAcademiaFraction',
-    hover_name='Country',
-    hover_data=['Academia', 'Company', 'Collaboration'],
-    labels=LABELS,
-    color_continuous_scale=[
-        (0, COLOR_MAP['Academia']),
-        (1, COLOR_MAP['Collaboration'])
-    ],
-    range_color=[40, 100],
-    title='Collaboration to Academia Publication Fractions',
-    center={'lat': 20}
-).update_layout(
-    title_x=0.5,
-    height=800,
-    coloraxis_colorbar=dict(
-        title='Collabor. Fraction',
-        ticks='outside',
-        ticksuffix='%'
-    )
-).update_geos(
-    visible=False,
-    showland=True,
-    landcolor='#ccc',
-    showcoastlines=True,
-    projection_type='natural earth'
-)
-
-choro_map_comp_acad_collab = px.choropleth(
-    country_org_count,
-    locations='CountryCode',
-    color='CompanyAcademiaCollabFraction',
-    hover_name='Country',
-    hover_data=['Academia', 'Company', 'Collaboration'],
-    labels=LABELS,
-    color_continuous_scale=[
-        (0, COLOR_MAP['Academia']),
-        (1, COLOR_MAP['Company'])
-    ],
-    range_color=[30, 50],
-    title='Company to Academia Publication Fractions (Collab. count for both)',
-    center={'lat': 20}
-).update_layout(
-    title_x=0.5,
-    height=800,
-    coloraxis_colorbar=dict(
-        title='Company Fraction',
-        ticks='outside',
-        ticksuffix='%'
-    )
-).update_geos(
-    visible=False,
-    showland=True,
-    landcolor='#ccc',
-    showcoastlines=True,
-    projection_type='natural earth'
-)
-
-pie_cat_academia = px.pie(
-    category_org_count,
-    values='Academia',
-    names='Category',
-    color='Category',
-    color_discrete_sequence=color_list,
-    labels=LABELS,
-    title='Academia'
-).update_layout(
-    showlegend=False,
-    title_x=0.5
-)
-
-pie_cat_companies = px.pie(
-    category_org_count,
-    values='Company',
-    names='Category',
-    color='Category',
-    color_discrete_sequence=color_list,
-    labels=LABELS,
-    title='Companies'
-).update_layout(
-    showlegend=False,
-    title_x=0.5
-)
-
-pie_cat_collaborations = px.pie(
-    category_org_count,
-    values='Collaboration',
-    names='Category',
-    color='Category',
-    color_discrete_sequence=color_list,
-    labels=LABELS,
-    title='Collaborations'
-).update_layout(
-    showlegend=False,
-    title_x=0.5
-)
-
-pie_cat_all = px.pie(
-    category_org_count,
-    values='Total',
-    names='Category',
-    color='Category',
-    color_discrete_sequence=color_list,
-    labels=LABELS,
-    title='Overall'
-).update_layout(
-    title_x=0.5
-)
-
-histogram_year_line = px.line(
-    year_org_count,
-    x='PY',
-    y='Count',
-    color='Organisation',
-    color_discrete_map=COLOR_MAP,
-    labels=LABELS,
-    title='Published Papers in the Data Set'
-).update_layout(
-    title_x=0.5
-)
 
 
 # --- LAYOUTS ---
@@ -392,8 +144,8 @@ analyses_layout = html.Div([
         html.Div([
                 html.Div([
                         html.P(
-                            'Filter by research area:',
-                            className='control_label two columns'
+                            'Filter by research area (overlapping categories):',
+                            className='control_label three columns'
                         ),
                         dcc.Dropdown(
                             id='category-filter',
@@ -409,14 +161,20 @@ analyses_layout = html.Div([
                 html.Div([
                         html.P(
                             'Filter by year published:',
-                            className='control_label two columns'
+                            className='control_label three columns'
                         ),
                         dcc.RangeSlider(
+                            id='year-slider',
                             marks=year_range_marks,
                             min=py_min,
                             max=py_max,
                             value=[py_min, py_max],
-                            className='dcc_control ten columns'
+                            className='dcc_control seven columns'
+                        ),
+                        html.Button(
+                            id='submit-button-state',
+                            n_clicks=0,
+                            children='Update Charts'
                         )
                     ],
                     className='row flex-display'
@@ -427,12 +185,10 @@ analyses_layout = html.Div([
         html.Div([
                 dcc.Graph(
                     id='histogram-year',
-                    figure=histogram_year,
                     className='pretty_container eight columns'
                 ),
                 dcc.Graph(
                     id='pie-org',
-                    figure=pie_org,
                     className='pretty_container four columns'
                 )
             ],
@@ -447,9 +203,16 @@ analyses_layout = html.Div([
             id='map-tabs',
             value='comp-acad-collab'
         ),
-        html.Div(
-            id='map-container',
+        html.Div([
+                dcc.Graph(
+                    id='choropleth-map'
+                )
+            ],
             className='row pretty_container'
+        ),
+        html.Div(
+            id='map-data',
+            style={'display': 'none'}
         ),
         html.Div([
                 html.Div([
@@ -463,22 +226,18 @@ analyses_layout = html.Div([
                 html.Div([
                         dcc.Graph(
                             id='pie-cat-all',
-                            figure=pie_cat_all,
                             className='five columns'
                         ),
                         dcc.Graph(
                             id='pie-cat-academia',
-                            figure=pie_cat_academia,
                             className='three columns'
                         ),
                         dcc.Graph(
                             id='pie-cat-companies',
-                            figure=pie_cat_companies,
                             className='three columns'
                         ),
                         dcc.Graph(
                             id='pie-cat-collaborations',
-                            figure=pie_cat_collaborations,
                             className='three columns'
                         )
                     ],
@@ -624,15 +383,6 @@ description_layout = html.Div([
 ])
 
 examples_layout = html.Div([
-        html.Div([
-            dcc.Graph(
-                id='histogram-year-line',
-                figure=histogram_year_line,
-                className='pretty_container twelve columns'
-            )
-        ],
-            className='row flex-display',
-        ),
         html.H2('Hello World'),
         dcc.Dropdown(
             id='dropdown',
@@ -643,24 +393,313 @@ examples_layout = html.Div([
 ])
 
 
+# --- HELPER FUNCTIONS ---
+
+def filter_dataframe(filter_categories, year_range):
+    """Init mask with only False values, add selected categories and filter by year range."""
+    mask = pd.Series(index=df.index, dtype=bool)
+    for category in filter_categories:
+        mask = mask | df[category].astype(bool)
+    return df[mask & (df['PY'] >= year_range[0]) & (df['PY'] <= year_range[1])]
+
+
+def calc_country_org_count(dff):
+    """Calculate the count of organisation by country."""
+    # Count of organisation by country
+    counts = dff.groupby(['CountryCode', 'Organisation']).size().unstack()
+    # Flatten hierarchical columns
+    counts.columns = counts.columns.tolist()
+    # Add country names from dataset
+    counts = counts.merge(
+        dff[['CountryCode', 'Country']],
+        how='left',
+        on='CountryCode'
+    ).drop_duplicates().reset_index(drop=True)
+    # Calculate fractions
+    counts['CompanyAcademiaFraction'] = 100 / (
+            counts['Academia'] / counts['Company'] + 1)
+    counts['CompanyCollaborationFraction'] = 100 / (
+            counts['Collaboration'] / counts['Company'] + 1)
+    counts['CollaborationAcademiaFraction'] = 100 / (
+            counts['Academia'] / counts['Collaboration'] + 1)
+    counts['CompanyAcademiaCollabFraction'] = 100 / ((
+            counts['Academia'] +
+            counts['Collaboration']
+        ) / (
+            counts['Company'] +
+            counts['Collaboration']
+        ) + 1)
+    return counts
+
+
+def draw_histogram(dff):
+    """Draw the histogram chart."""
+    # Count of organisation by year
+    year_org_count = pd.DataFrame({'Count': dff.groupby(['PY', 'Organisation']).size()}).reset_index()
+
+    fig = px.bar(
+        year_org_count,
+        x='PY',
+        y='Count',
+        barmode='group',
+        color='Organisation',
+        color_discrete_map=COLOR_MAP,
+        labels=LABELS,
+        title='Published Papers in the Data Set'
+    ).update_layout(
+        title_x=0.5
+    )
+    return fig
+
+
+def draw_pie(dff):
+    """Draw the pie chart."""
+    # Count of organisation
+    org_count = pd.DataFrame({'Count': dff.groupby(['Organisation']).size()}).reset_index()
+
+    fig = px.pie(
+        org_count,
+        values='Count',
+        names='Organisation',
+        color='Organisation',
+        color_discrete_map=COLOR_MAP,
+        title='Distribution of Academia vs Companies'
+    ).update_layout(
+        title_x=0.5
+    )
+    return fig
+
+
+def draw_category_pies(dff):
+    """Draw the category pie charts."""
+    # Count of organization type for each category
+    category_org_count = dff[[
+        *RESEARCH_CATEGORIES,
+        'Organisation'
+    ]].replace(0, np.nan).groupby('Organisation').agg('count').T
+    # Flatten categorical columns
+    category_org_count.columns = category_org_count.columns.tolist()
+    # Set names properly and reset the index
+    category_org_count['Total'] = category_org_count.sum(axis='columns')
+    category_org_count = category_org_count.reset_index().rename({'index': 'Category'}, axis='columns').replace(LABELS)
+
+    pie_cat_academia = px.pie(
+        category_org_count,
+        values='Academia',
+        names='Category',
+        color='Category',
+        color_discrete_sequence=color_list,
+        labels=LABELS,
+        title='Academia'
+    ).update_layout(
+        showlegend=False,
+        title_x=0.5
+    )
+
+    pie_cat_companies = px.pie(
+        category_org_count,
+        values='Company',
+        names='Category',
+        color='Category',
+        color_discrete_sequence=color_list,
+        labels=LABELS,
+        title='Companies'
+    ).update_layout(
+        showlegend=False,
+        title_x=0.5
+    )
+
+    pie_cat_collaborations = px.pie(
+        category_org_count,
+        values='Collaboration',
+        names='Category',
+        color='Category',
+        color_discrete_sequence=color_list,
+        labels=LABELS,
+        title='Collaborations'
+    ).update_layout(
+        showlegend=False,
+        title_x=0.5
+    )
+
+    pie_cat_all = px.pie(
+        category_org_count,
+        values='Total',
+        names='Category',
+        color='Category',
+        color_discrete_sequence=color_list,
+        labels=LABELS,
+        title='Overall'
+    ).update_layout(
+        title_x=0.5
+    )
+    return [pie_cat_academia, pie_cat_companies, pie_cat_collaborations, pie_cat_all]
+
+
 # --- CALLBACKS ---
 
-@app.callback(Output('map-container', 'children'), Input('map-tabs', 'value'))
-def render_map_content(tab):
+@app.callback(Output('choropleth-map', 'figure'),
+              Input('map-tabs', 'value'),
+              Input('map-data', 'children'))
+def draw_map(tab, counts_json):
+    """Draw the four different choropleth maps."""
+    # Import jsonified saved map-data
+    country_org_count = pd.read_json(counts_json, orient='split')
+
+    choro_map_comp_acad = px.choropleth(
+        country_org_count,
+        locations='CountryCode',
+        color='CompanyAcademiaFraction',
+        hover_name='Country',
+        hover_data=['Academia', 'Company', 'Collaboration'],
+        labels=LABELS,
+        color_continuous_scale=[
+            (0, COLOR_MAP['Academia']),
+            (1, COLOR_MAP['Company'])
+        ],
+        range_color=[0, 20],
+        title='Company to Academia Publication Fractions',
+        center={'lat': 20}
+    ).update_layout(
+        title_x=0.5,
+        height=800,
+        coloraxis_colorbar=dict(
+            title='Company Fraction',
+            ticks='outside',
+            ticksuffix='%'
+        )
+    ).update_geos(
+        visible=False,
+        showland=True,
+        landcolor='#ccc',
+        showcoastlines=True,
+        projection_type='natural earth'
+    )
+
+    choro_map_comp_collab = px.choropleth(
+        country_org_count,
+        locations='CountryCode',
+        color='CompanyCollaborationFraction',
+        hover_name='Country',
+        hover_data=['Academia', 'Company', 'Collaboration'],
+        labels=LABELS,
+        color_continuous_scale=[
+            (0, COLOR_MAP['Collaboration']),
+            (1, COLOR_MAP['Company'])
+        ],
+        range_color=[0, 16],
+        title='Company to Collaboration Publication Fractions',
+        center={'lat': 20}
+    ).update_layout(
+        title_x=0.5,
+        height=800,
+        coloraxis_colorbar=dict(
+            title='Company Fraction',
+            ticks='outside',
+            ticksuffix='%'
+        )
+    ).update_geos(
+        visible=False,
+        showland=True,
+        landcolor='#ccc',
+        showcoastlines=True,
+        projection_type='natural earth'
+    )
+
+    choro_map_collab_acad = px.choropleth(
+        country_org_count,
+        locations='CountryCode',
+        color='CollaborationAcademiaFraction',
+        hover_name='Country',
+        hover_data=['Academia', 'Company', 'Collaboration'],
+        labels=LABELS,
+        color_continuous_scale=[
+            (0, COLOR_MAP['Academia']),
+            (1, COLOR_MAP['Collaboration'])
+        ],
+        range_color=[40, 100],
+        title='Collaboration to Academia Publication Fractions',
+        center={'lat': 20}
+    ).update_layout(
+        title_x=0.5,
+        height=800,
+        coloraxis_colorbar=dict(
+            title='Collabor. Fraction',
+            ticks='outside',
+            ticksuffix='%'
+        )
+    ).update_geos(
+        visible=False,
+        showland=True,
+        landcolor='#ccc',
+        showcoastlines=True,
+        projection_type='natural earth'
+    )
+
+    choro_map_comp_acad_collab = px.choropleth(
+        country_org_count,
+        locations='CountryCode',
+        color='CompanyAcademiaCollabFraction',
+        hover_name='Country',
+        hover_data=['Academia', 'Company', 'Collaboration'],
+        labels=LABELS,
+        color_continuous_scale=[
+            (0, COLOR_MAP['Academia']),
+            (1, COLOR_MAP['Company'])
+        ],
+        range_color=[30, 50],
+        title='Company to Academia Publication Fractions (Collab. count for both)',
+        center={'lat': 20}
+    ).update_layout(
+        title_x=0.5,
+        height=800,
+        coloraxis_colorbar=dict(
+            title='Company Fraction',
+            ticks='outside',
+            ticksuffix='%'
+        )
+    ).update_geos(
+        visible=False,
+        showland=True,
+        landcolor='#ccc',
+        showcoastlines=True,
+        projection_type='natural earth'
+    )
+
     if tab == 'comp-acad-collab':
-        return dcc.Graph(id='choro-map-comp-acad-collab', figure=choro_map_comp_acad_collab)
+        return choro_map_comp_acad_collab
     elif tab == 'comp-acad':
-        return dcc.Graph(id='choro-map-comp-acad', figure=choro_map_comp_acad)
+        return choro_map_comp_acad
     elif tab == 'comp-collab':
-        return dcc.Graph(id='choro-map-comp-collab', figure=choro_map_comp_collab)
+        return choro_map_comp_collab
     elif tab == 'collab-acad':
-        return dcc.Graph(id='choro-map-collab-acad', figure=choro_map_collab_acad)
+        return choro_map_collab_acad
 
 
 @app.callback(dash.dependencies.Output('display-value', 'children'),
               [dash.dependencies.Input('dropdown', 'value')])
 def display_value(value):
     return 'You have selected "{}"'.format(value)
+
+
+@app.callback(Output('histogram-year', 'figure'),
+              Output('pie-org', 'figure'),
+              Output('map-data', 'children'),
+              Output('pie-cat-all', 'figure'),
+              Output('pie-cat-academia', 'figure'),
+              Output('pie-cat-companies', 'figure'),
+              Output('pie-cat-collaborations', 'figure'),
+              Input('submit-button-state', 'n_clicks'),
+              State('category-filter', 'value'),
+              State('year-slider', 'value'))
+def create_charts(_n_clicks, filter_categories, year_range):
+    """Calls functions for creating/updating charts and outputs them."""
+    del _n_clicks  # n_clicks is only used for triggering this function
+    dff = filter_dataframe(filter_categories, year_range)
+    return (draw_histogram(dff),
+            draw_pie(dff),
+            calc_country_org_count(dff).to_json(orient='split'),
+            *draw_category_pies(dff))
 
 
 # --- URL ROUTER ---
