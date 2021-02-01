@@ -382,16 +382,6 @@ description_layout = html.Div([
         )
 ])
 
-examples_layout = html.Div([
-        html.H2('Hello World'),
-        dcc.Dropdown(
-            id='dropdown',
-            options=[{'label': i, 'value': i} for i in ['LA', 'NYC', 'MTL']],
-            value='LA'
-        ),
-        html.Div(id='display-value')
-])
-
 
 # --- HELPER FUNCTIONS ---
 
@@ -676,12 +666,6 @@ def draw_map(tab, counts_json):
         return choro_map_collab_acad
 
 
-@app.callback(dash.dependencies.Output('display-value', 'children'),
-              [dash.dependencies.Input('dropdown', 'value')])
-def display_value(value):
-    return 'You have selected "{}"'.format(value)
-
-
 @app.callback(Output('histogram-year', 'figure'),
               Output('pie-org', 'figure'),
               Output('map-data', 'children'),
@@ -713,8 +697,6 @@ def display_page(pathname):
         return dataset_layout
     elif pathname == '/description':
         return description_layout
-    elif pathname == '/examples':
-        return examples_layout
     else:
         # the default
         return analyses_layout
