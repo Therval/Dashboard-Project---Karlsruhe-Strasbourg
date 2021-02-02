@@ -148,6 +148,14 @@ analyses_layout = html.Div([
             className='row'
         ),
         html.Div([
+                html.H5(
+                    'Map of Publisher Organisation Ratios',
+                    className='center-content'
+                )
+            ],
+            className='row'
+        ),
+        html.Div([
                 dcc.Tabs([
                         dcc.Tab(label='Company vs Academia w/ Collab.', value='comp-acad-collab'),
                         dcc.Tab(label='Company vs Academia', value='comp-acad'),
