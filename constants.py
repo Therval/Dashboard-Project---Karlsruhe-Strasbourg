@@ -1,4 +1,39 @@
-"""Define text and markdown strings."""
+# -*- coding: utf-8 -*-
+"""Define constant strings."""
+
+DATASET_PATH = 'dataset/papers.parquet'
+PANDASPROFILING_REPORT = 'papers_pandas-profiling-report.html'
+SWEETVIZ_REPORT = 'papers_sweetviz-report.html'
+
+RESEARCH_CATEGORIES = [
+    'ArtsHumanities',
+    'LifeSciencesBiomedicine',
+    'PhysicalSciences',
+    'SocialSciences',
+    'Technology'
+]
+
+# Describe some of the labels
+LABELS = {
+    'PY': 'Year Published',
+    'SC': 'Research Areas',
+    'NR': 'Cited Reference Count',
+    'TCperYear': 'WoS Core Cited Count per Year',
+    'NumAuthors': 'Number of Authors',
+    'CountryCode': 'Country Code',
+    'ArtsHumanities': 'Arts & Humanities',
+    'LifeSciencesBiomedicine': 'Life Sciences & Biomedicine',
+    'PhysicalSciences': 'Physical Sciences',
+    'SocialSciences': 'Social Sciences',
+    'Technology': 'Technology'
+}
+
+# Set color scheme
+COLOR_MAP = {
+    'Academia': '#3a6186',
+    'Company': '#89253e',
+    'Collaboration': '#719F78'
+}
 
 HEADER_INTRO_TXT = '''
 This dashboard shows the diffusion of publications between academia and companies in the field of Deep Learning.

@@ -46,7 +46,7 @@ pip install -r requirements.txt
 (activate the virtual environment again, necessary)
 
 ```sh
-python app.py
+python index.py
 # To run a dtale application with the data set:
 python dtale_app.py
 ```
@@ -69,8 +69,9 @@ The files `runtime.txt`, `Procfile` and the requirement `gunicorn` are used for
 This project uses:
 
 - [Python 3.8](https://www.python.org/)
-- [Pandas](https://pandas.pydata.org/)
 - [Plotly Dash](https://plotly.com/dash/)
+- [Pandas](https://pandas.pydata.org/)
+- [NumPy](https://numpy.org/)
 - [PyArrow](https://arrow.apache.org/docs/python/)
 - [Gunicorn](https://gunicorn.org/)
 
