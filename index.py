@@ -8,7 +8,8 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 
-from app import app
+# Although server and callbacks are not used directly, they are still needed
+from app import app, server
 from layouts import analyses_layout, dataset_layout, description_layout
 import callbacks
 
