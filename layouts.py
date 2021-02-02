@@ -40,50 +40,54 @@ analyses_layout = html.Div([
                             id='subtitle'
                         ),
                     ],
-                    id='title',
-                    className='twelve columns'
+                    id='title'
                 )
             ],
             id='header',
-            className='row flex-display'
+            className='row'
         ),
         html.Div([
                 html.Div([
                         html.H6(
                             HEADER_INTRO_TXT,
-                            className='ten columns'
-                        ),
-                        html.Div([
-                                html.A(
-                                    'Learn More',
-                                    href='/description',
-                                    id='learn-more-btn',
-                                    role='button',
-                                    className='button'
-                                ),
-                                html.A(
-                                    'Explore Dataset',
-                                    href='/dataset',
-                                    id='explore-dataset-btn',
-                                    role='button',
-                                    className='button'
-                                )
-                            ],
-                            className='two columns item-column'
                         )
                     ],
-                    className='pretty_container'
+                    className='ten columns'
                 ),
+                html.Div([
+                        html.A(
+                            'Learn More',
+                            href='/description',
+                            id='learn-more-btn',
+                            role='button',
+                            className='button'
+                        ),
+                        html.A(
+                            'Explore Dataset',
+                            href='/dataset',
+                            id='explore-dataset-btn',
+                            role='button',
+                            className='button'
+                        )
+                    ],
+                    className='two columns item-column'
+                )
             ],
             id='header-description',
-            className='row flex-display'
+            className='row flex-display pretty_container'
         ),
         html.Div([
                 html.Div([
                         html.P(
-                            'Filter by research area (overlapping categories):',
-                            className='control_label three columns'
+                            'Filter by research area (overlapping categories):'
                         ),
+                        html.P(
+                            'Filter by year published:'
+                        )
+                    ],
+                    className='three columns control_label'
+                ),
+                html.Div([
                         dcc.Dropdown(
                             id='category-filter',
                             options=[{'label': LABELS[category], 'value': category}
@@ -91,14 +95,6 @@ analyses_layout = html.Div([
                             multi=True,
                             value=RESEARCH_CATEGORIES,
                             className='dcc_control'
-                        )
-                    ],
-                    className='row flex-display'
-                ),
-                html.Div([
-                        html.P(
-                            'Filter by year published:',
-                            className='control_label three columns'
                         ),
                         dcc.RangeSlider(
                             id='year-slider',
@@ -106,93 +102,92 @@ analyses_layout = html.Div([
                             min=py_min,
                             max=py_max,
                             value=[py_min, py_max],
-                            className='dcc_control seven columns'
-                        ),
+                            className='dcc_control'
+                        )
+                    ],
+                    className='seven columns'
+                ),
+                html.Div([
                         html.Button(
                             id='submit-button-state',
                             n_clicks=0,
-                            children='Update Charts'
+                            children='Update Charts',
+                            className='button'
                         )
                     ],
-                    className='row flex-display'
+                    className='two columns item-column'
                 ),
             ],
-            className='pretty_container'
+            className='row flex-display pretty_container'
         ),
         html.Div([
-                dcc.Graph(
-                    id='histogram-year',
-                    className='pretty_container eight columns'
+                html.Div([
+                        dcc.Graph(
+                            id='histogram-year'
+                        )
+                    ],
+                    className='eight columns pretty_container'
                 ),
-                dcc.Graph(
-                    id='pie-org',
-                    className='pretty_container four columns'
+                html.Div([
+                        dcc.Graph(
+                            id='pie-org'
+                        )
+                ],
+                    className='four columns pretty_container'
                 )
             ],
-            className='row flex-display'
-        ),
-        dcc.Tabs([
-                dcc.Tab(label='Company vs Academia w/ Collab.', value='comp-acad-collab'),
-                dcc.Tab(label='Company vs Academia', value='comp-acad'),
-                dcc.Tab(label='Company vs Collaboration', value='comp-collab'),
-                dcc.Tab(label='Collaboration vs Academia', value='collab-acad')
-            ],
-            id='map-tabs',
-            value='comp-acad-collab'
+            className='row'
         ),
         html.Div([
-                dcc.Graph(
-                    id='choropleth-map'
+                dcc.Tabs([
+                        dcc.Tab(label='Company vs Academia w/ Collab.', value='comp-acad-collab'),
+                        dcc.Tab(label='Company vs Academia', value='comp-acad'),
+                        dcc.Tab(label='Company vs Collaboration', value='comp-collab'),
+                        dcc.Tab(label='Collaboration vs Academia', value='collab-acad')
+                    ],
+                    id='map-tabs',
+                    value='comp-acad-collab'
+                ),
+                html.Div([
+                        dcc.Graph(
+                            id='choropleth-map'
+                        )
+                    ],
+                    className='pretty_container'
+                ),
+                html.Div(
+                    id='map-data',
+                    style={'display': 'none'}
                 )
             ],
-            className='row pretty_container'
-        ),
-        html.Div(
-            id='map-data',
-            style={'display': 'none'}
+            className='row'
         ),
         html.Div([
                 html.Div([
                         html.H5(
-                            'Research Area Distribution',
-                            className='center-content flex-display twelve columns'
+                            'Research Area Distribution'
                         )
                     ],
-                    className='row flex-display'
+                    className='twelve columns center-content'
                 ),
-                html.Div([
-                        dcc.Graph(
-                            id='pie-cat-all',
-                            className='five columns'
-                        ),
-                        dcc.Graph(
-                            id='pie-cat-academia',
-                            className='three columns'
-                        ),
-                        dcc.Graph(
-                            id='pie-cat-companies',
-                            className='three columns'
-                        ),
-                        dcc.Graph(
-                            id='pie-cat-collaborations',
-                            className='three columns'
-                        )
-                    ],
-                    className='row flex-display'
+                dcc.Graph(
+                    id='pie-cat-all',
+                    className='six columns'
                 ),
-            ],
-            className='pretty_container'
-        ),
-        html.Div([
-                html.A([
-                        'Example charts',
-                    ],
-                    href='/examples',
-                    role='button',
-                    className='button'
+                dcc.Graph(
+                    id='pie-cat-academia',
+                    className='two columns'
+                ),
+                dcc.Graph(
+                    id='pie-cat-companies',
+                    className='two columns'
+                ),
+                dcc.Graph(
+                    id='pie-cat-collaborations',
+                    className='two columns'
                 )
             ],
-            className='row flex-display'
+            className='row pretty_container'
         )
 ])
 
@@ -279,18 +274,17 @@ description_layout = html.Div([
                             id='subtitle'
                         ),
                     ],
-                    id='title',
-                    className='twelve columns'
+                    id='title'
                 )
             ],
             id='header',
-            className='row flex-display'
+            className='row'
         ),
         html.Div([
                 html.Div([
                         dcc.Markdown(PROJECT_DESCRIPTION_TXT)
                     ],
-                    className='pretty_container twelve columns text-container'
+                    className='pretty_container text-container'
                 ),
             ],
             className='row flex-display center-content'
@@ -312,7 +306,7 @@ description_layout = html.Div([
                             className='button'
                         )
                     ],
-                    className='pretty_container twelve columns item-column'
+                    className='pretty_container item-column'
                 ),
             ],
             className='row flex-display center-content'
