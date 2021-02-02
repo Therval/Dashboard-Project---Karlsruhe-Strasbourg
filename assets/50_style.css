@@ -10,6 +10,7 @@
 
 #header-description {
     text-align: justify;
+    margin-bottom: 20px;
 }
 
 div#category-filter {
@@ -30,6 +31,10 @@ div#category-filter {
 .padded {
     padding-left: 30px;
     padding-right: 30px;
+}
+
+.margin-t {
+    margin-top: 30px;
 }
 
 .margin-b {

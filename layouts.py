@@ -162,8 +162,8 @@ analyses_layout = html.Div([
         ),
         html.Div([
                 html.H5(
-                    'Map of Publisher Organisation Ratios',
-                    className='center-content'
+                    'Organisation Ratio Map of Publications',
+                    className='center-content margin-t'
                 )
             ],
             className='row'
@@ -201,7 +201,7 @@ analyses_layout = html.Div([
         html.Div([
                 html.H5(
                     'Research Area Distribution',
-                    className='center-content'
+                    className='center-content margin-t'
                 )
             ],
             className='row'
