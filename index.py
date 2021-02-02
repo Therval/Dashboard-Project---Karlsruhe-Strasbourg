@@ -21,6 +21,7 @@ app.layout = html.Div([
 @app.callback(Output('page-content', 'children'),
               Input('url', 'pathname'))
 def display_page(pathname):
+    """Route to the desired page."""
     if pathname == '/':
         return analyses_layout
     elif pathname == '/dataset':
