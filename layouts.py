@@ -122,18 +122,26 @@ analyses_layout = html.Div([
         ),
         html.Div([
                 html.Div([
-                        dcc.Graph(
-                            id='histogram-year'
+                        html.Div([
+                                dcc.Graph(
+                                    id='histogram-year'
+                                )
+                            ],
+                            className='pretty_container'
                         )
                     ],
-                    className='eight columns pretty_container'
+                    className='eight columns'
                 ),
                 html.Div([
-                        dcc.Graph(
-                            id='pie-org'
+                        html.Div([
+                                dcc.Graph(
+                                    id='pie-org'
+                                )
+                            ],
+                            className='pretty_container'
                         )
-                ],
-                    className='four columns pretty_container'
+                    ],
+                    className='four columns'
                 )
             ],
             className='row'
@@ -163,31 +171,45 @@ analyses_layout = html.Div([
             className='row'
         ),
         html.Div([
-                html.Div([
-                        html.H5(
-                            'Research Area Distribution'
-                        )
-                    ],
-                    className='twelve columns center-content'
-                ),
-                dcc.Graph(
-                    id='pie-cat-all',
-                    className='six columns'
-                ),
-                dcc.Graph(
-                    id='pie-cat-academia',
-                    className='two columns'
-                ),
-                dcc.Graph(
-                    id='pie-cat-companies',
-                    className='two columns'
-                ),
-                dcc.Graph(
-                    id='pie-cat-collaborations',
-                    className='two columns'
+                html.H5(
+                    'Research Area Distribution',
+                    className='center-content'
                 )
             ],
-            className='row pretty_container'
+            className='row'
+        ),
+        html.Div([
+                html.Div([
+                        dcc.Graph(
+                            id='pie-cat-all'
+                        )
+                    ],
+                    className='six columns'
+                ),
+                html.Div([
+                        dcc.Graph(
+                            id='pie-cat-academia'
+                        )
+                    ],
+                    className='two columns small-pie'
+                ),
+                html.Div([
+                        dcc.Graph(
+                            id='pie-cat-companies'
+                        )
+                    ],
+                    className='two columns small-pie'
+                ),
+                html.Div([
+                        dcc.Graph(
+                            id='pie-cat-collaborations'
+                        )
+                    ],
+                    className='two columns small-pie'
+                ),
+            ],
+            id='category-pies',
+            className='row flex-display pretty_container'
         )
 ])
 
@@ -201,20 +223,19 @@ dataset_layout = html.Div([
                             'Paper Dataset'
                         )
                     ],
-                    id='title',
-                    className='twelve columns'
+                    id='title'
                 )
             ],
             id='header',
-            className='row flex-display'
+            className='row'
         ),
         html.Div([
-            html.Div([
-                dcc.Markdown(DATASET_FEATURES_TXT)
+                html.Div([
+                        dcc.Markdown(DATASET_FEATURES_TXT)
+                    ],
+                    className='twelve columns pretty_container flex-display center-content text-container'
+                ),
             ],
-                className='pretty_container twelve columns flex-display center-content text-container'
-            ),
-        ],
             className='row flex-display center-content'
         ),
         html.Div([
@@ -252,7 +273,7 @@ dataset_layout = html.Div([
                             className='button'
                         )
                     ],
-                    className='pretty_container twelve columns item-column'
+                    className='pretty_container item-column'
                 ),
             ],
             className='row flex-display center-content'

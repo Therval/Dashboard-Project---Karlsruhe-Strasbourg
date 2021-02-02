@@ -27,22 +27,30 @@ div#category-filter {
     margin-top: 0;
 }
 
+.small-pie.two.columns {
+    width: 17%;
+    margin-left: 0%;
+}
+
 .center-content {
     justify-content: center;
+    text-align: center;
 }
 
 .text-container {
     max-width: 1000px;
 }
 
+.absolute {
+    position: absolute;
+}
+
+
 .item-column {
-    height: 100%;
     max-width: 400px;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    padding-right: 40px;
-    padding-left: 40px;
 }
 
 .pretty_container {
@@ -52,3 +60,5 @@ div#category-filter {
 button, .button {
     margin: 10px;
 }
+
+
