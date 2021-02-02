@@ -105,6 +105,18 @@ def draw_category_pies(dff):
     category_org_count['Total'] = category_org_count.sum(axis='columns')
     category_org_count = category_org_count.reset_index().rename({'index': 'Category'}, axis='columns').replace(LABELS)
 
+    pie_cat_all = px.pie(
+        category_org_count,
+        values='Total',
+        names='Category',
+        color='Category',
+        color_discrete_sequence=color_list,
+        labels=LABELS,
+        title='Overall'
+    ).update_layout(
+        title_x=0.5
+    )
+
     pie_cat_academia = px.pie(
         category_org_count,
         values='Academia',
@@ -143,19 +155,7 @@ def draw_category_pies(dff):
         showlegend=False,
         title_x=0.5
     )
-
-    pie_cat_all = px.pie(
-        category_org_count,
-        values='Total',
-        names='Category',
-        color='Category',
-        color_discrete_sequence=color_list,
-        labels=LABELS,
-        title='Overall'
-    ).update_layout(
-        title_x=0.5
-    )
-    return [pie_cat_academia, pie_cat_companies, pie_cat_collaborations, pie_cat_all]
+    return [pie_cat_all, pie_cat_academia, pie_cat_companies, pie_cat_collaborations]
 
 
 # --- CALLBACKS ---
