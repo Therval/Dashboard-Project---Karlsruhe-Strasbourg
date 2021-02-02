@@ -3,11 +3,12 @@
 
 import dash_core_components as dcc
 import dash_html_components as html
+import random
 
 # Local import of the text strings
 from app import df
-from constants import (LABELS, RESEARCH_CATEGORIES, PANDASPROFILING_REPORT, SWEETVIZ_REPORT,
-                       HEADER_INTRO_TXT, DATASET_FEATURES_TXT, PROJECT_DESCRIPTION_TXT)
+from constants import (LOADING_TYPE, COLOR_MAP, LABELS, RESEARCH_CATEGORIES, PANDASPROFILING_REPORT,
+                       SWEETVIZ_REPORT, HEADER_INTRO_TXT, DATASET_FEATURES_TXT, PROJECT_DESCRIPTION_TXT)
 
 
 # --- CALCULATIONS ---
@@ -24,6 +25,8 @@ year_range_marks = {
     **{i: str(i) for i in range(py_min, py_max, 5)},
     **{py_max: str(py_max)}
 }
+
+loading_color = random.choice(list(COLOR_MAP.values()))
 
 
 # --- ANALYSES ---
@@ -124,8 +127,13 @@ analyses_layout = html.Div([
         html.Div([
                 html.Div([
                         html.Div([
-                                dcc.Graph(
-                                    id='histogram-year'
+                                dcc.Loading([
+                                        dcc.Graph(
+                                            id='histogram-year'
+                                        )
+                                    ],
+                                    type=LOADING_TYPE,
+                                    color=loading_color
                                 )
                             ],
                             className='pretty_container'
@@ -135,8 +143,13 @@ analyses_layout = html.Div([
                 ),
                 html.Div([
                         html.Div([
-                                dcc.Graph(
-                                    id='pie-org'
+                                dcc.Loading([
+                                        dcc.Graph(
+                                            id='pie-org'
+                                        )
+                                    ],
+                                    type=LOADING_TYPE,
+                                    color=loading_color
                                 )
                             ],
                             className='pretty_container'
@@ -166,8 +179,13 @@ analyses_layout = html.Div([
                     value='comp-acad-collab'
                 ),
                 html.Div([
-                        dcc.Graph(
-                            id='choropleth-map'
+                        dcc.Loading([
+                                dcc.Graph(
+                                    id='choropleth-map'
+                                )
+                            ],
+                            type=LOADING_TYPE,
+                            color=loading_color
                         )
                     ],
                     id='map-container',
@@ -190,29 +208,49 @@ analyses_layout = html.Div([
         ),
         html.Div([
                 html.Div([
-                        dcc.Graph(
-                            id='pie-cat-all'
+                        dcc.Loading([
+                                dcc.Graph(
+                                    id='pie-cat-all'
+                                )
+                            ],
+                            type=LOADING_TYPE,
+                            color=loading_color
                         )
                     ],
                     className='six columns'
                 ),
                 html.Div([
-                        dcc.Graph(
-                            id='pie-cat-academia'
+                        dcc.Loading([
+                                dcc.Graph(
+                                    id='pie-cat-academia'
+                                )
+                            ],
+                            type=LOADING_TYPE,
+                            color=loading_color
                         )
                     ],
                     className='two columns tight'
                 ),
                 html.Div([
-                        dcc.Graph(
-                            id='pie-cat-companies'
+                        dcc.Loading([
+                                dcc.Graph(
+                                    id='pie-cat-companies'
+                                )
+                            ],
+                            type=LOADING_TYPE,
+                            color=loading_color
                         )
                     ],
                     className='two columns tight'
                 ),
                 html.Div([
-                        dcc.Graph(
-                            id='pie-cat-collaborations'
+                        dcc.Loading([
+                                dcc.Graph(
+                                    id='pie-cat-collaborations'
+                                )
+                            ],
+                            type=LOADING_TYPE,
+                            color=loading_color
                         )
                     ],
                     className='two columns tight'

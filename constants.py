@@ -5,6 +5,8 @@ DATASET_PATH = 'dataset/papers.parquet'
 PANDASPROFILING_REPORT = 'papers_pandas-profiling-report.html'
 SWEETVIZ_REPORT = 'papers_sweetviz-report.html'
 
+LOADING_TYPE = 'default'
+
 RESEARCH_CATEGORIES = [
     'ArtsHumanities',
     'LifeSciencesBiomedicine',
