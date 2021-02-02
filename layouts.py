@@ -74,12 +74,13 @@ analyses_layout = html.Div([
                 )
             ],
             id='header-description',
-            className='row flex-display pretty_container'
+            className='row flex-display pretty_container padded'
         ),
         html.Div([
                 html.Div([
                         html.P(
-                            'Filter by research area (overlapping categories):'
+                            'Filter by research area (overlapping categories):',
+                            className='margin-b'
                         ),
                         html.P(
                             'Filter by year published:'
@@ -94,7 +95,7 @@ analyses_layout = html.Div([
                                      for category in RESEARCH_CATEGORIES],
                             multi=True,
                             value=RESEARCH_CATEGORIES,
-                            className='dcc_control'
+                            className='dcc_control margin-b'
                         ),
                         dcc.RangeSlider(
                             id='year-slider',
@@ -118,7 +119,7 @@ analyses_layout = html.Div([
                     className='two columns item-column'
                 ),
             ],
-            className='row flex-display pretty_container'
+            className='row flex-display pretty_container padded'
         ),
         html.Div([
                 html.Div([
@@ -141,7 +142,7 @@ analyses_layout = html.Div([
                             className='pretty_container'
                         )
                     ],
-                    className='four columns'
+                    className='four columns tight'
                 )
             ],
             className='row'
@@ -161,6 +162,7 @@ analyses_layout = html.Div([
                             id='choropleth-map'
                         )
                     ],
+                    id='map-container',
                     className='pretty_container'
                 ),
                 html.Div(
@@ -191,21 +193,21 @@ analyses_layout = html.Div([
                             id='pie-cat-academia'
                         )
                     ],
-                    className='two columns small-pie'
+                    className='two columns tight'
                 ),
                 html.Div([
                         dcc.Graph(
                             id='pie-cat-companies'
                         )
                     ],
-                    className='two columns small-pie'
+                    className='two columns tight'
                 ),
                 html.Div([
                         dcc.Graph(
                             id='pie-cat-collaborations'
                         )
                     ],
-                    className='two columns small-pie'
+                    className='two columns tight'
                 ),
             ],
             id='category-pies',
@@ -273,7 +275,7 @@ dataset_layout = html.Div([
                             className='button'
                         )
                     ],
-                    className='pretty_container item-column'
+                    className='pretty_container item-column padded'
                 ),
             ],
             className='row flex-display center-content'
@@ -305,7 +307,7 @@ description_layout = html.Div([
                 html.Div([
                         dcc.Markdown(PROJECT_DESCRIPTION_TXT)
                     ],
-                    className='pretty_container text-container'
+                    className='pretty_container padded text-container'
                 ),
             ],
             className='row flex-display center-content'
@@ -327,7 +329,7 @@ description_layout = html.Div([
                             className='button'
                         )
                     ],
-                    className='pretty_container item-column'
+                    className='pretty_container item-column padded'
                 ),
             ],
             className='row flex-display center-content'

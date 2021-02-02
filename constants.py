@@ -42,7 +42,7 @@ These papers were published in the Web of Science Core Collection.
 The papers were retrieved through web scraping.
 The use of deep learning was identified through keyword search in the title and abstract.
 The author metadata was used for classifying the publications into company, academia or collaborations of both.
-To learn more about the descriptions of the dashboard graphs and their functions click on "Learn More".
+Use the links on the right to learn more about the dashboard graphs, their functions and the data set.
 '''
 
 DATASET_FEATURES_TXT = '''
