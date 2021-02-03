@@ -32,9 +32,9 @@ LABELS = {
 
 # Set color scheme
 COLOR_MAP = {
-    'Academia': '#3a6186',
-    'Company': '#89253e',
-    'Collaboration': '#719F78'
+    'Academia': '#E9B254',
+    'Company': '#89253E',
+    'Collaboration': '#3A6186'
 }
 
 HEADER_INTRO_TXT = '''
