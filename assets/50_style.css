@@ -65,6 +65,7 @@ div#category-filter {
 
 .text-container {
     max-width: 1000px;
+    text-align: justify;
 }
 
 .absolute {

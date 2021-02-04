@@ -67,7 +67,7 @@ def draw_histogram(dff):
         color='Organisation',
         color_discrete_map=COLOR_MAP,
         labels=LABELS,
-        title='Publications of Organizations by Year'
+        title='Publications of Organisations by Year'
     ).update_layout(
         title_x=0.5
     )
@@ -94,7 +94,7 @@ def draw_pie(dff):
 
 def draw_category_pies(dff):
     """Draw the category pie charts."""
-    # Count of organization type for each category
+    # Count of organisation type for each category
     category_org_count = dff[[
         *RESEARCH_CATEGORIES,
         'Organisation'

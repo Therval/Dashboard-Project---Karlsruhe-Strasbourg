@@ -281,7 +281,7 @@ dataset_layout = html.Div([
                 html.Div([
                         dcc.Markdown(DATASET_FEATURES_TXT)
                     ],
-                    className='twelve columns pretty_container flex-display center-content text-container'
+                    className='twelve columns pretty_container flex-display text-container'
                 ),
             ],
             className='row flex-display center-content'
