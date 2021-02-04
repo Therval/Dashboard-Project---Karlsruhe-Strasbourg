@@ -67,7 +67,7 @@ def draw_histogram(dff):
         color='Organisation',
         color_discrete_map=COLOR_MAP,
         labels=LABELS,
-        title='Published Papers in the Data Set'
+        title='Publications of Organizations by Year'
     ).update_layout(
         title_x=0.5
     )
@@ -85,7 +85,7 @@ def draw_pie(dff):
         names='Organisation',
         color='Organisation',
         color_discrete_map=COLOR_MAP,
-        title='Distribution of Academia vs Companies'
+        title='Distribution of Publications'
     ).update_layout(
         title_x=0.5
     )
@@ -112,7 +112,7 @@ def draw_category_pies(dff):
         color='Category',
         color_discrete_sequence=color_list,
         labels=LABELS,
-        title='Overall'
+        title='Overall Distribution'
     ).update_layout(
         title_x=0.5
     )
