@@ -41,7 +41,6 @@ HEADER_INTRO_TXT = '''
 This dashboard shows the diffusion of publications between academia and companies in the field of Deep Learning.
 It includes a total of 287544 scientific publications.
 These papers were published in the Web of Science Core Collection.
-The papers were retrieved through web scraping.
 The use of deep learning was identified through keyword search in the title and abstract.
 The author metadata was used for classifying the publications into company, academia or collaborations of both.
 Use the links on the right to learn more about the dashboard graphs, their functions and the data set.
